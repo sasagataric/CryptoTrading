@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CryptoTrading.API
+namespace CryptoTrading.Domain.Models
 {
-    public class MarketData
+    public class CoinMarketDataDomainModel
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
