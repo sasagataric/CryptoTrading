@@ -11,4 +11,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CryptoTrading.Repositories\CryptoTrading.Repositories.csproj" />
+  </ItemGroup>
+
 </Project>

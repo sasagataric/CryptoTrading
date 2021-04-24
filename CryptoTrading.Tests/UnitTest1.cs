@@ -16,23 +16,19 @@ namespace CryptoTrading.Tests
 
         private Mock<CoinGecko.Interfaces.ICoinGeckoClient> _mockCoinGeckoClient;
 
-        private Mock<IHttpClientFactory> _mockHttpClientFactory;
-
         [TestInitialize]
         public void TestInit()
         {
             _mockCoinGeckoClient = new Mock<CoinGecko.Interfaces.ICoinGeckoClient>();
 
-            _mockHttpClientFactory= new Mock<IHttpClientFactory>();
-
-            _cryptoCoinsControler = new CryptoCoinsControler(_mockHttpClientFactory.Object, _mockCoinGeckoClient.Object);
+            _cryptoCoinsControler = new CryptoCoinsControler( _mockCoinGeckoClient.Object);
 
         }
 
         [TestMethod]
         public async Task TestMethod1()
         {
-
+            //Arrange
             int expectedStatusCode = 200;
             int expectedResultCount = 1;
 
@@ -45,7 +41,14 @@ namespace CryptoTrading.Tests
                 }
             };
 
-            _mockCoinGeckoClient.Setup(srvc => srvc.CoinsClient.GetCoinMarkets("usd")).ReturnsAsync(expectedCoinMarkets);
+            _mockCoinGeckoClient.Setup(srvc => srvc.CoinsClient.GetCoinMarkets(It.IsAny<string>(), 
+                                                                               It.IsAny<string[]>(), 
+                                                                               It.IsAny<string>(), 
+                                                                               It.IsAny<int>(), 
+                                                                               It.IsAny<int>(), 
+                                                                               It.IsAny<bool>(), 
+                                                                               It.IsAny<string>(),
+                                                                               It.IsAny<string>())).ReturnsAsync(expectedCoinMarkets);
 
             //Act
             var result = await _cryptoCoinsControler.GetCoinMarkets();
