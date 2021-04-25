@@ -1,4 +1,5 @@
 using CryptoTrading.Data.Context;
+using CryptoTrading.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +43,13 @@ namespace CryptoTrading.API
             services.AddHttpClient();
 
             services.AddTransient<CoinGecko.Interfaces.ICoinGeckoClient, CoinGecko.Clients.CoinGeckoClient>();
+
+            //Repository
+            services.AddTransient<ICoinsRepository, CoinsRepository>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<IWalletHistoryRepository, WalletHistoryRepository>();
+            services.AddTransient<IWalletssRepositor, WalletsRepository>();
+
 
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
