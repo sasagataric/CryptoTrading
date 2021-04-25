@@ -4,14 +4,16 @@ using CryptoTrading.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CryptoTrading.Data.Migrations
 {
     [DbContext(typeof(CryptoTradingContext))]
-    partial class CryptoTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20210425014141_FixedEntities")]
+    partial class FixedEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +33,7 @@ namespace CryptoTrading.Data.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("WatchList");
+                    b.ToTable("CoinUser");
                 });
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.Coin", b =>

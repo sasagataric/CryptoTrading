@@ -4,14 +4,16 @@ using CryptoTrading.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CryptoTrading.Data.Migrations
 {
     [DbContext(typeof(CryptoTradingContext))]
-    partial class CryptoTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20210424233736_M2MUpdate")]
+    partial class M2MUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +33,7 @@ namespace CryptoTrading.Data.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("WatchList");
+                    b.ToTable("CoinUser");
                 });
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.Coin", b =>
@@ -60,6 +62,7 @@ namespace CryptoTrading.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -91,13 +94,15 @@ namespace CryptoTrading.Data.Migrations
                     b.Property<double?>("Profit")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("UserId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Wallets");
                 });
@@ -168,10 +173,8 @@ namespace CryptoTrading.Data.Migrations
             modelBuilder.Entity("CryptoTrading.Data.Entities.Wallet", b =>
                 {
                     b.HasOne("CryptoTrading.Data.Entities.User", "User")
-                        .WithOne("Wallet")
-                        .HasForeignKey("CryptoTrading.Data.Entities.Wallet", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
@@ -198,11 +201,11 @@ namespace CryptoTrading.Data.Migrations
             modelBuilder.Entity("CryptoTrading.Data.Entities.WalletHistory", b =>
                 {
                     b.HasOne("CryptoTrading.Data.Entities.Coin", "Coin")
-                        .WithMany("WalletHistorys")
+                        .WithMany()
                         .HasForeignKey("CoinId");
 
                     b.HasOne("CryptoTrading.Data.Entities.Wallet", "Wallet")
-                        .WithMany("WalletHistorys")
+                        .WithMany()
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -215,20 +218,11 @@ namespace CryptoTrading.Data.Migrations
             modelBuilder.Entity("CryptoTrading.Data.Entities.Coin", b =>
                 {
                     b.Navigation("WalletCoins");
-
-                    b.Navigation("WalletHistorys");
-                });
-
-            modelBuilder.Entity("CryptoTrading.Data.Entities.User", b =>
-                {
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.Wallet", b =>
                 {
                     b.Navigation("WalletCoins");
-
-                    b.Navigation("WalletHistorys");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,8 +26,13 @@ namespace CryptoTrading.Data.Context
                 .HasMany(c => c.Coins)
                 .WithMany(w => w.Wallets)
                 .UsingEntity<WalletCoins>(
-                x => x.HasOne(w => w.Coin).WithMany(c=>c.WalletCoins),
-                x => x.HasOne(w => w.Wallet).WithMany(w => w.WalletCoins));
+                x => x.HasOne(w => w.Coin).WithMany(c=>c.WalletCoins).HasForeignKey("CoinId"),
+                x => x.HasOne(w => w.Wallet).WithMany(w => w.WalletCoins).HasForeignKey("WalletId"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Coins)
+                .WithMany(c => c.Users)
+                .UsingEntity(join => join.ToTable("WatchList"));
         }
     }
 }

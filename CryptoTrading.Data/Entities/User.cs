@@ -13,11 +13,9 @@ namespace CryptoTrading.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
-
-        [Required(ErrorMessage = "The email address is required")]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string Email { get; set; }
         public string Role { get; set; }
         public ICollection<Coin> Coins { get; set; }
+        public Wallet Wallet { get; set; }
     }
 }
