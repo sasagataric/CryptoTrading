@@ -11,7 +11,7 @@ namespace CryptoTrading.Repositories.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(object id);
         Task<T> InsertAsync(T obj);
-        void Save();
+        Task SaveAsync();
         T Update(T obj);
         T Delete(object id);
     }
