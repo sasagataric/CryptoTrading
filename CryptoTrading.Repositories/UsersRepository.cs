@@ -10,7 +10,12 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface IUsersRepository : IRepository<User> { }
+    public interface IUsersRepository : IRepository<User>
+    {
+        Task<User> GetByUserNameAsync(string username);
+        Task<bool> CheckUsername(string username);
+        Task<bool> CheckEmail(string email);
+    }
     public class UsersRepository : IUsersRepository
     {
         private CryptoTradingContext _cryptoTradingContext;
@@ -54,5 +59,33 @@ namespace CryptoTrading.Repositories
             return deleted.Entity;
         }
 
+        public async Task<User> GetByUserNameAsync(string username)
+        {
+            var data = await _cryptoTradingContext.Users.Where(x => x.UserName == username).Include(u=>u.Coins).FirstOrDefaultAsync();
+
+            return data;
+        }
+
+        public async Task<bool> CheckUsername(string username)
+        {
+            var data = await _cryptoTradingContext.Users.Where(x => x.UserName == username).FirstOrDefaultAsync();
+
+            if (data == null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> CheckEmail(string email)
+        {
+            var data = await _cryptoTradingContext.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
+
+            if (data == null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
