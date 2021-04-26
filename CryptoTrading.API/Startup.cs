@@ -1,4 +1,8 @@
+using CryptoTrading.API.Mapper;
 using CryptoTrading.Data.Context;
+using CryptoTrading.Domain.Common;
+using CryptoTrading.Domain.Interfaces;
+using CryptoTrading.Domain.Services;
 using CryptoTrading.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +44,8 @@ namespace CryptoTrading.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CryptoTrading.API", Version = "v1" });
             });
 
+            services.AddAutoMapper(typeof(ContollersProfileMapper), typeof(ServicesProfileMapper));
+
             services.AddHttpClient();
 
             services.AddTransient<CoinGecko.Interfaces.ICoinGeckoClient, CoinGecko.Clients.CoinGeckoClient>();
@@ -49,6 +55,9 @@ namespace CryptoTrading.API
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IWalletHistoryRepository, WalletHistoryRepository>();
             services.AddTransient<IWalletssRepositor, WalletsRepository>();
+
+            //Service
+            services.AddTransient<IUserService, UserService>();
 
 
             services.AddCors(options => {
