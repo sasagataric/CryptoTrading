@@ -10,9 +10,9 @@ namespace CryptoTrading.Domain.Interfaces
     public interface IUserService
     {
         Task<GenericDomainModel<UserDomainModel>> GetAllAsync();
-        Task<GenericDomainModel<UserDomainModel>> GetUserByIdAsync(Guid id);
+        Task<GenericDomainModel<UserDomainModel>> GetByIdAsync(Guid userId);
         Task<GenericDomainModel<UserDomainModel>> CreateUserAsync(UserDomainModel userToCreate);
-        Task<GenericDomainModel<UserDomainModel>> GetUserByUserNameAsync(string username);
+        Task<GenericDomainModel<UserDomainModel>> GetByUserNameAsync(string username);
         Task<GenericDomainModel<UserDomainModel>> DeleteUserAsync(Guid userId);
         Task<GenericDomainModel<UserDomainModel>> UpdateUserAsync(Guid userId, UserDomainModel userToUpdate);
     }

@@ -57,9 +57,24 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public Task<GenericDomainModel<UserDomainModel>> DeleteUserAsync(Guid userId)
+        public async Task<GenericDomainModel<UserDomainModel>> DeleteUserAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            var checkUser = await _usersRepository.GetByIdAsync(userId);
+            if (checkUser == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_CREATION_ERROR
+                };
+            }
+
+            var deletedUser = _usersRepository.Delete(checkUser);
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(deletedUser)
+            };
         }
 
         public Task<GenericDomainModel<UserDomainModel>> GetAllAsync()
@@ -67,19 +82,96 @@ namespace CryptoTrading.Domain.Services
             throw new NotImplementedException();
         }
 
-        public Task<GenericDomainModel<UserDomainModel>> GetUserByIdAsync(Guid id)
+        public async Task<GenericDomainModel<UserDomainModel>> GetByIdAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            var user = await _usersRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_ID_NULL
+                };
+            }
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(user)
+            };
         }
 
-        public Task<GenericDomainModel<UserDomainModel>> GetUserByUserNameAsync(string username)
+        public async Task<GenericDomainModel<UserDomainModel>> GetByUserNameAsync(string username)
         {
-            throw new NotImplementedException();
+            var user = await _usersRepository.GetByUserNameAsync(username);
+            if (user == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_ID_NULL
+                };
+            }
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(user)
+            };
         }
 
-        public Task<GenericDomainModel<UserDomainModel>> UpdateUserAsync(Guid userId, UserDomainModel userToUpdate)
+        public async Task<GenericDomainModel<UserDomainModel>> UpdateUserAsync(Guid userId, UserDomainModel userToUpdate)
         {
-            throw new NotImplementedException();
+            var user = await _usersRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_ID_NULL
+                };
+            }
+
+            if (user.UserName != userToUpdate.UserName)
+            {
+                var userUserName = await _usersRepository.CheckUsername(userToUpdate.UserName);
+                if (!userUserName)
+                {
+                    return new GenericDomainModel<UserDomainModel>
+                    {
+                        IsSuccessful = false,
+                        ErrorMessage = Messages.USER_ID_NULL
+                    };
+                }
+            }
+
+            if (user.Email != userToUpdate.Email)
+            {
+                var userUserName = await _usersRepository.CheckEmail(userToUpdate.Email);
+                if (userUserName)
+                {
+                    return new GenericDomainModel<UserDomainModel>
+                    {
+                        IsSuccessful = false,
+                        ErrorMessage = Messages.USER_ID_NULL
+                    };
+                }
+            }
+
+
+
+            user.Email = userToUpdate.Email;
+            user.FirstName = userToUpdate.FirstName;
+            user.LastName = userToUpdate.LastName;
+            user.UserName = userToUpdate.UserName;
+
+            await _usersRepository.SaveAsync();
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(user)
+            };
         }
     }
 }
