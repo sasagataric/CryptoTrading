@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CryptoTrading.API.Mapper;
 using CryptoTrading.API.Models;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;

@@ -54,10 +54,12 @@ namespace CryptoTrading.API
             services.AddTransient<ICoinsRepository, CoinsRepository>();
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IWalletHistoryRepository, WalletHistoryRepository>();
-            services.AddTransient<IWalletssRepositor, WalletsRepository>();
+            services.AddTransient<IWalletsRepositor, WalletsRepository>();
 
             //Service
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IWalletService, WalletService>();
+            services.AddTransient<ICoinService, CoinService>();
 
 
             services.AddCors(options => {
