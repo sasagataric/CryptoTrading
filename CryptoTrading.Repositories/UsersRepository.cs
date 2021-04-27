@@ -66,6 +66,13 @@ namespace CryptoTrading.Repositories
             return data;
         }
 
+        public async Task<User> GetByUserEmail(string email)
+        {
+            var data = await _cryptoTradingContext.Users.Where(x => x.Email == email).Include(u => u.Coins).FirstOrDefaultAsync();
+
+            return data;
+        }
+
         public async Task<bool> CheckUsername(string username)
         {
             var data = await _cryptoTradingContext.Users.Where(x => x.UserName == username).FirstOrDefaultAsync();

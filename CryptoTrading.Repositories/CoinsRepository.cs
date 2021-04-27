@@ -59,8 +59,6 @@ namespace CryptoTrading.Repositories
 
         public async Task<IEnumerable<Coin>> GetCoinsFromWathchlistByUserId(Guid userId)
         {
-            //var user = await _cryptoTradingContext.Users.FindAsync(userId);
-            //var data = user.Coins.ToList();
             var data = await _cryptoTradingContext.Coins.Where(c => c.Users.Any(u => u.Id == userId)).ToListAsync();
             return data;
         }

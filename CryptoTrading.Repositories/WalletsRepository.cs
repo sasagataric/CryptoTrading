@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface IWalletssRepositor : IRepository<Wallet>
+    public interface IWalletsRepositor : IRepository<Wallet>
     {
-        Task<Wallet> GetByWalletId(Guid WalletId);
+        Task<Wallet> GetByWalletIdAsync(Guid walletId);
+        Task<Wallet> GetByUserIdAsync(Guid userId);
     }
-    public class WalletsRepository : IWalletssRepositor
+    public class WalletsRepository : IWalletsRepositor
     {
         private CryptoTradingContext _cryptoTradingContext;
         public WalletsRepository(CryptoTradingContext cryptoTradingContext)
@@ -33,9 +34,9 @@ namespace CryptoTrading.Repositories
             return data;
         }
 
-        public async Task<Wallet> GetByWalletId(Guid WalletId)
+        public async Task<Wallet> GetByWalletIdAsync(Guid walletId)
         {
-            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.Id == WalletId).FirstOrDefaultAsync();
+            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.Id == walletId).FirstOrDefaultAsync();
             return data;
         }
 
@@ -63,5 +64,10 @@ namespace CryptoTrading.Repositories
             return deleted.Entity;
         }
 
+        public async Task<Wallet> GetByUserIdAsync(Guid userId)
+        {
+            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.UserId == userId).FirstOrDefaultAsync();
+            return data;
+        }
     }
 }
