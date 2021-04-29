@@ -15,8 +15,9 @@ namespace CryptoTrading.Domain.Common
         {
             CreateMap<User, UserDomainModel>().ReverseMap();
             CreateMap<Wallet, WalletDomainModel>().ReverseMap();
-            CreateMap<CoinGecko.Entities.Response.Coins.CoinFullDataById, Coin>().ReverseMap();
+            CreateMap<CoinGecko.Entities.Response.Coins.CoinMarkets, Coin>().ReverseMap();
             CreateMap<CoinDomainModel, Coin>().ReverseMap();
+            CreateMap<PurchasedCoin, PurchasedCoinDomainModel>().ReverseMap();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CryptoTrading.Domain.Common
 {
     public static class Messages
     {
-        #region Users
+        #region User
         public const string USER_NAME_REQUIRED = "User require name.";
         public const string USER_USERNAME_REQUIRED = "User require username.";
         public const string USER_LASTNAME_REQUIRED = "User require lastname.";
@@ -24,12 +24,20 @@ namespace CryptoTrading.Domain.Common
         public const string WALLET_CREATION_ERROR = "Error occured while creating new wallet, please try again.";
         public const string WALLET_NOT_ENOUGHT_MONEY_ERROR = "The wallet does not have enough money for the transaction.";
         public const string WALLET_ID_NULL = "Error occured while getting wallet by Id, please try again.";
+        public const string WALLET_INSUFFICIENT_FOUNDS = "Insufficient funds in wallet";
+
         #endregion
-        #region Wallet
+        #region Coin
         public const string COIN_CREATION_ERROR = "Error occured while creating new coin, please try again.";
         public const string COIN_ALREDY_EXISTS = "Coin wont be created becouse it alredy exists.";
         public const string COIN_ID_NULL = "Error occured while getting wallet by Id, please try again.";
         public const string COIN_DELETE_ERROR = "Error occured while deleting coin, please try again.";
+        #endregion
+        #region CoinGecko
+        public const string COINGECKO_COIN_DATA_ERROR = "Error occured while geting coin data from CoinGeckoAPI, please try again.";
+        #endregion
+        #region PurchasedCoin
+        public const string PURCHASEDCOIN_CREATION_ERROR = "Error occured while making new purchase, please try again.";
         #endregion
     }
 }

@@ -16,12 +16,23 @@ namespace CryptoTrading.Domain.Services
     {
         private readonly IWalletsRepositor _walletRepository;
         private readonly IUsersRepository _usersRepository;
+        private readonly IPurchasedCoinsRepository _purchasedCoinsRepository;
+        private readonly ICoinsRepository _coinsRepository;
+        private readonly CoinGecko.Interfaces.ICoinGeckoClient _coinGeckoClient;
         private readonly IMapper _mapper;
 
-        public WalletService(IWalletsRepositor walletRepository, IUsersRepository usersRepository, IMapper mapper)
+        public WalletService(IWalletsRepositor walletRepository, 
+                            IUsersRepository usersRepository, 
+                            IPurchasedCoinsRepository purchasedCoinsRepository,
+                            ICoinsRepository coinsRepository,
+                            CoinGecko.Interfaces.ICoinGeckoClient coinGeckoClient, 
+                            IMapper mapper)
         {
             _walletRepository = walletRepository;
             _usersRepository = usersRepository;
+            _purchasedCoinsRepository = purchasedCoinsRepository;
+            _coinsRepository = coinsRepository;
+            _coinGeckoClient = coinGeckoClient;
             _mapper = mapper;
         }
 
@@ -38,7 +49,7 @@ namespace CryptoTrading.Domain.Services
             }
 
             var CheckUserWallet = await _walletRepository.GetByUserIdAsync(newWallet.UserId);
-            if (CheckUserWallet == null)
+            if (CheckUserWallet != null)
             {
                 return new GenericDomainModel<WalletDomainModel>
                 {
