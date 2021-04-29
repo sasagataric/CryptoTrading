@@ -14,7 +14,7 @@ namespace CryptoTrading.Data.Entities
         public double Balance { get; set; }
         public double? Profit { get; set; }
         public ICollection<Coin> Coins { get; set; }
-        public ICollection<WalletCoins> WalletCoins { get; set; }
+        public ICollection<PurchasedCoin> PurchasedCoin { get; set; }
         public ICollection<WalletHistory> WalletHistorys { get; set; }
     }
 }

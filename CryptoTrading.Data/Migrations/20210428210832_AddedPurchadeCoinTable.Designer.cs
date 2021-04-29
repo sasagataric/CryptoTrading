@@ -4,14 +4,16 @@ using CryptoTrading.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CryptoTrading.Data.Migrations
 {
     [DbContext(typeof(CryptoTradingContext))]
-    partial class CryptoTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20210428210832_AddedPurchadeCoinTable")]
+    partial class AddedPurchadeCoinTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +70,7 @@ namespace CryptoTrading.Data.Migrations
 
                     b.HasIndex("CoinId");
 
-                    b.ToTable("PurchasedCoin");
+                    b.ToTable("WalletCoins");
                 });
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.User", b =>
@@ -168,13 +170,13 @@ namespace CryptoTrading.Data.Migrations
             modelBuilder.Entity("CryptoTrading.Data.Entities.PurchasedCoin", b =>
                 {
                     b.HasOne("CryptoTrading.Data.Entities.Coin", "Coin")
-                        .WithMany("PurchasedCoin")
+                        .WithMany("WalletCoins")
                         .HasForeignKey("CoinId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CryptoTrading.Data.Entities.Wallet", "Wallet")
-                        .WithMany("PurchasedCoin")
+                        .WithMany("WalletCoins")
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -214,7 +216,7 @@ namespace CryptoTrading.Data.Migrations
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.Coin", b =>
                 {
-                    b.Navigation("PurchasedCoin");
+                    b.Navigation("WalletCoins");
 
                     b.Navigation("WalletHistorys");
                 });
@@ -226,7 +228,7 @@ namespace CryptoTrading.Data.Migrations
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.Wallet", b =>
                 {
-                    b.Navigation("PurchasedCoin");
+                    b.Navigation("WalletCoins");
 
                     b.Navigation("WalletHistorys");
                 });
