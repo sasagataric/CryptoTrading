@@ -13,7 +13,11 @@ namespace CryptoTrading.API.Mapper
     {
         public ContollersProfileMapper()
         {
-            CreateMap<CreateUserModel,UserDomainModel>().AfterMap((src, dest) => { dest.Role = "user"; dest.Id = Guid.NewGuid(); });
+            CreateMap<CreateUserModel,UserDomainModel>().AfterMap((src, dest) => { dest.Role = "user"; 
+                                                                                   dest.Id = Guid.NewGuid(); });
+
+            CreateMap<CreateWalletModel, WalletDomainModel>().AfterMap((src, dest) => {dest.Id = Guid.NewGuid();  
+                                                                                       dest.Profit = 0;});
         }
     }
 }

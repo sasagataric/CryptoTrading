@@ -8,6 +8,6 @@ namespace CryptoTrading.API.Models
     public class CreateWalletModel
     {
         public Guid UserId { get; set; }
-        public Guid Balance { get; set; }
+        public double Balance { get; set; }
     }
 }
