@@ -13,6 +13,7 @@ namespace CryptoTrading.Domain.Interfaces
         Task<GenericDomainModel<UserDomainModel>> GetByIdAsync(Guid userId);
         Task<GenericDomainModel<UserDomainModel>> CreateUserAsync(UserDomainModel userToCreate);
         Task<GenericDomainModel<UserDomainModel>> GetByUserNameAsync(string username);
+        Task<GenericDomainModel<UserDomainModel>> GetByUserEmailAsync(string email);
         Task<GenericDomainModel<UserDomainModel>> DeleteUserAsync(Guid userId);
         Task<GenericDomainModel<UserDomainModel>> UpdateUserAsync(Guid userId, UserDomainModel userToUpdate);
     }

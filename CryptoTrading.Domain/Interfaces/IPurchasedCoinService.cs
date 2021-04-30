@@ -10,5 +10,8 @@ namespace CryptoTrading.Domain.Interfaces
     public interface IPurchasedCoinService
     {
         Task<GenericDomainModel<PurchasedCoinDomainModel>> BuyCoinAsync(Guid walletId, string coinId, double coinAmount);
+        Task<GenericDomainModel<PurchasedCoinDomainModel>> SellCoinAsync(Guid walletId, string coinId, double coinAmount);
+        Task<GenericDomainModel<PurchasedCoinDomainModel>> GetPurchasesByUserId(Guid userId);
+        Task<GenericDomainModel<PurchasedCoinDomainModel>> GetPurchase(Guid walletId, string coinId);
     }
 }

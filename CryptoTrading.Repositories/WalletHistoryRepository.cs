@@ -17,7 +17,7 @@ namespace CryptoTrading.Repositories
     }
     public class WalletHistoryRepository : IWalletHistoryRepository
     {
-        private CryptoTradingContext _cryptoTradingContext;
+        private readonly CryptoTradingContext _cryptoTradingContext;
         public WalletHistoryRepository(CryptoTradingContext cryptoTradingContext)
         {
             _cryptoTradingContext = cryptoTradingContext;

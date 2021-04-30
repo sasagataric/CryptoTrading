@@ -9,11 +9,16 @@ namespace CryptoTrading.Domain.Common
     public static class Messages
     {
         #region User
+        public const string USER_ID_REQUIRED = "User ID can't be empty.";
         public const string USER_NAME_REQUIRED = "User require name.";
         public const string USER_USERNAME_REQUIRED = "User require username.";
         public const string USER_LASTNAME_REQUIRED = "User require lastname.";
         public const string USER_EMAIL_REQUIRED = "User require email in correct format.";
-        public const string USER_ID_NULL = "Error occured while getting user by Id, please try again.";
+        public const string USER_NOT_FOUND = "User not found.";
+        public const string USERS_NOT_FOUND = "Users not found.";
+        public const string USER_ID_ERROR = "Error occured while getting user by Id, please try again.";
+        public const string USER_GET_BY_USERNAME = "Error occured while getting user by username, please try again.";
+        public const string USER_GET_BY_EMAIL = "Error occured while getting user by email, please try again.";
         public const string USER_CREATION_ERROR = "Error occured while creating new user, please try again.";
         public const string USER_CREATION_ERROR_USERNAME_EXISTS = "Error occured while creating new user, username exists.";
         public const string USER_CREATION_ERROR_EMAIL_EXISTS = "Error occured while creating new user, email exists.";
@@ -37,7 +42,10 @@ namespace CryptoTrading.Domain.Common
         public const string COINGECKO_COIN_DATA_ERROR = "Error occured while geting coin data from CoinGeckoAPI, please try again.";
         #endregion
         #region PurchasedCoin
-        public const string PURCHASEDCOIN_CREATION_ERROR = "Error occured while making new purchase, please try again.";
+        public const string PURCHASED_COIN_CREATION_ERROR = "Error occured while making new purchase, please try again.";
+        public const string PURCHASED_CANT_BE_FOUND= "Purchase can't be found.";
+        public const string PURCHASED_COIN_CANT_BE_SOLD = "The coin wasn't in a wallet so it can't be sold.";
+        public const string PURCHASED_COIN_NOT_ENOUGHT_COINS_IN_WALLET = "Can't sell an Amount larger than what you have in your wallet.";
         #endregion
     }
 }

@@ -6,8 +6,6 @@ using CryptoTrading.Domain.Models;
 using CryptoTrading.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CryptoTrading.Domain.Services
@@ -20,6 +18,82 @@ namespace CryptoTrading.Domain.Services
         {
             _usersRepository = usersRepository;
             _mapper = mapper;
+        }
+
+        public async Task<GenericDomainModel<UserDomainModel>> GetAllAsync()
+        {
+            var users = await _usersRepository.GetAllAsync();
+            if (users == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USERS_NOT_FOUND
+                };
+            }
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                DataList = _mapper.Map<IEnumerable<User>, List<UserDomainModel>>(users)
+            };
+        }
+
+        public async Task<GenericDomainModel<UserDomainModel>> GetByIdAsync(Guid userId)
+        {
+            var user = await _usersRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_ID_ERROR
+                };
+            }
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(user)
+            };
+        }
+
+        public async Task<GenericDomainModel<UserDomainModel>> GetByUserNameAsync(string username)
+        {
+            var user = await _usersRepository.GetByUserNameAsync(username);
+            if (user == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_GET_BY_USERNAME
+                };
+            }
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(user)
+            };
+        }
+
+        public async Task<GenericDomainModel<UserDomainModel>> GetByUserEmailAsync(string email)
+        {
+            var user = await _usersRepository.GetByUserNameAsync(email);
+            if (user == null)
+            {
+                return new GenericDomainModel<UserDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USER_GET_BY_EMAIL
+                };
+            }
+
+            return new GenericDomainModel<UserDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<UserDomainModel>(user)
+            };
         }
 
         public async Task<GenericDomainModel<UserDomainModel>> CreateUserAsync(UserDomainModel userToCreate)
@@ -39,7 +113,7 @@ namespace CryptoTrading.Domain.Services
             var newUser = _mapper.Map<User>(userToCreate);
 
             var insertedUser = await _usersRepository.InsertAsync(newUser);
-            if(insertedUser == null)
+            if (insertedUser == null)
             {
                 return new GenericDomainModel<UserDomainModel>
                 {
@@ -77,49 +151,6 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public Task<GenericDomainModel<UserDomainModel>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<GenericDomainModel<UserDomainModel>> GetByIdAsync(Guid userId)
-        {
-            var user = await _usersRepository.GetByIdAsync(userId);
-            if (user == null)
-            {
-                return new GenericDomainModel<UserDomainModel>
-                {
-                    IsSuccessful = false,
-                    ErrorMessage = Messages.USER_ID_NULL
-                };
-            }
-
-            return new GenericDomainModel<UserDomainModel>
-            {
-                IsSuccessful = true,
-                Data = _mapper.Map<UserDomainModel>(user)
-            };
-        }
-
-        public async Task<GenericDomainModel<UserDomainModel>> GetByUserNameAsync(string username)
-        {
-            var user = await _usersRepository.GetByUserNameAsync(username);
-            if (user == null)
-            {
-                return new GenericDomainModel<UserDomainModel>
-                {
-                    IsSuccessful = false,
-                    ErrorMessage = Messages.USER_ID_NULL
-                };
-            }
-
-            return new GenericDomainModel<UserDomainModel>
-            {
-                IsSuccessful = true,
-                Data = _mapper.Map<UserDomainModel>(user)
-            };
-        }
-
         public async Task<GenericDomainModel<UserDomainModel>> UpdateUserAsync(Guid userId, UserDomainModel userToUpdate)
         {
             var user = await _usersRepository.GetByIdAsync(userId);
@@ -128,42 +159,19 @@ namespace CryptoTrading.Domain.Services
                 return new GenericDomainModel<UserDomainModel>
                 {
                     IsSuccessful = false,
-                    ErrorMessage = Messages.USER_ID_NULL
+                    ErrorMessage = Messages.USER_ID_ERROR
                 };
             }
 
-            if (user.UserName != userToUpdate.UserName)
+            if (userToUpdate.FirstName != null)
             {
-                var userUserName = await _usersRepository.CheckUsername(userToUpdate.UserName);
-                if (!userUserName)
-                {
-                    return new GenericDomainModel<UserDomainModel>
-                    {
-                        IsSuccessful = false,
-                        ErrorMessage = Messages.USER_ID_NULL
-                    };
-                }
+                user.FirstName = userToUpdate.FirstName;
             }
 
-            if (user.Email != userToUpdate.Email)
+            if (userToUpdate.LastName != null)
             {
-                var userUserName = await _usersRepository.CheckEmail(userToUpdate.Email);
-                if (userUserName)
-                {
-                    return new GenericDomainModel<UserDomainModel>
-                    {
-                        IsSuccessful = false,
-                        ErrorMessage = Messages.USER_ID_NULL
-                    };
-                }
+                user.LastName = userToUpdate.LastName;
             }
-
-
-
-            user.Email = userToUpdate.Email;
-            user.FirstName = userToUpdate.FirstName;
-            user.LastName = userToUpdate.LastName;
-            user.UserName = userToUpdate.UserName;
 
             await _usersRepository.SaveAsync();
 
