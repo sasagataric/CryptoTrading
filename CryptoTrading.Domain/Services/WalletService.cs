@@ -5,9 +5,6 @@ using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
 using CryptoTrading.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CryptoTrading.Domain.Services
@@ -44,7 +41,7 @@ namespace CryptoTrading.Domain.Services
                 return new GenericDomainModel<WalletDomainModel>
                 {
                     IsSuccessful = false,
-                    ErrorMessage = Messages.USER_ID_NULL
+                    ErrorMessage = Messages.USER_ID_ERROR
                 };
             }
 
@@ -104,7 +101,7 @@ namespace CryptoTrading.Domain.Services
                 return new GenericDomainModel<WalletDomainModel>
                 {
                     IsSuccessful = false,
-                    ErrorMessage = Messages.USER_ID_NULL
+                    ErrorMessage = Messages.USER_ID_ERROR
                 };
             }
 
@@ -133,7 +130,7 @@ namespace CryptoTrading.Domain.Services
                 return new GenericDomainModel<WalletDomainModel>
                 {
                     IsSuccessful = false,
-                    ErrorMessage = Messages.USER_ID_NULL
+                    ErrorMessage = Messages.USER_ID_ERROR
                 };
             }
 

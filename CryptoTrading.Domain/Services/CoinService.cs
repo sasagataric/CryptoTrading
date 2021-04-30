@@ -4,10 +4,6 @@ using CryptoTrading.Domain.Common;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
 using CryptoTrading.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CryptoTrading.Domain.Services
