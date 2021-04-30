@@ -143,7 +143,7 @@ namespace CryptoTrading.Data.Migrations
                     b.Property<Guid>("WalletId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("amount")
+                    b.Property<double>("Amount")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
