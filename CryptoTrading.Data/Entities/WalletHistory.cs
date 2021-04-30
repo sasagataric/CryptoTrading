@@ -14,7 +14,7 @@ namespace CryptoTrading.Data.Entities
         public Guid WalletId { get; set; }
         public Wallet Wallet { get; set; }
         public DateTime TransactionDate { get; set; }
-        public double amount { get; set; }
+        public double Amount { get; set; }
         public double CoinPrice { get; set; }
     }
 }
