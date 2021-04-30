@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CryptoTrading.API.Models
 {
@@ -16,7 +14,7 @@ namespace CryptoTrading.API.Models
         public string CoinId { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue, ErrorMessage = "Please enter amount bigger than {0}")]
+        [Range(0, double.MaxValue, ErrorMessage = "Please enter Amount bigger than {0}")]
         public double Amount { get; set; }
     }
 }

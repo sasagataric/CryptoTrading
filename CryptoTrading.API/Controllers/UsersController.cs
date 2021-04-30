@@ -1,13 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using CryptoTrading.API.Models;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using CryptoTrading.Domain.Common;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,23 +25,48 @@ namespace CryptoTrading.API.Controllers
             _mapper = mapper;
         }
         // GET: api/<UsersController>
-        [HttpGet]
-        public IEnumerable<string> GetUser()
+        [HttpGet("GetAll")]
+        public async Task<ActionResult> GetAllUser()
         {
-            return new string[] { "value1", "value2" };
+            var users = await _userService.GetAllAsync();
+
+            if (!users.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = users.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok(users.DataList);
         }
 
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public string GetUserById(int id)
+        [HttpGet("GetById/{userId:Guid}")]
+        public async Task<ActionResult> GetUserById(Guid userId)
         {
-            return "value";
+            var user = await _userService.GetByIdAsync(userId);
+
+            if (!user.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = user.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok(user.Data);
         }
 
         // POST api/<UsersController>
-        [HttpPost]
-        [Route("Create")]
-        public async Task<ActionResult<GenericDomainModel<UserDomainModel>>> CreateUserAsync(CreateUserModel createUser)
+        [HttpPost("Create")]
+        public async Task<ActionResult> CreateUserAsync(CreateUserModel createUser)
         {
             if (!ModelState.IsValid)
             {
@@ -80,16 +105,66 @@ namespace CryptoTrading.API.Controllers
             return CreatedAtAction(nameof(GetUserById), new { Id = createdUser.Data.Id }, createdUser.Data);
         }
 
-        // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("Update/{userId:Guid}")]
+        public async Task<ActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserModel updateUser)
         {
+            if (userId == Guid.Empty)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = Messages.USER_ID_REQUIRED,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponse);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var updatedUser = await _userService.UpdateUserAsync(userId, _mapper.Map<UserDomainModel>(updateUser));
+            if (!updatedUser.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = updatedUser.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Accepted(updatedUser.Data);
         }
 
         // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("Delete/{userId}")]
+        public async Task<ActionResult> DeleteUser(Guid userId)
         {
+            if (userId == Guid.Empty)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = Messages.USER_ID_ERROR,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+                return BadRequest(errorResponse);
+            }
+
+            var deleteUser = await _userService.DeleteUserAsync(userId);
+
+            if (!deleteUser.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = deleteUser.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+            return Accepted();
         }
     }
 }

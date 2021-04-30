@@ -1,23 +1,16 @@
 using CryptoTrading.API.Mapper;
 using CryptoTrading.Data.Context;
-using CryptoTrading.Domain.Common;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Services;
 using CryptoTrading.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CryptoTrading.Domain.Mapper;
 
 namespace CryptoTrading.API
 {
@@ -44,7 +37,7 @@ namespace CryptoTrading.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CryptoTrading.API", Version = "v1" });
             });
 
-            services.AddAutoMapper(typeof(ContollersProfileMapper), typeof(ServicesProfileMapper));
+            services.AddAutoMapper(typeof(ControllersProfileMapper), typeof(ServicesProfileMapper));
 
             services.AddHttpClient();
 

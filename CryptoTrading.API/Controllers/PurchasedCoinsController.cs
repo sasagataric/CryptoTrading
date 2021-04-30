@@ -1,13 +1,12 @@
-﻿using CryptoTrading.API.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using CryptoTrading.API.Models;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 
 namespace CryptoTrading.API.Controllers
 {
@@ -21,23 +20,50 @@ namespace CryptoTrading.API.Controllers
         {
             _purchasedCoinService = purchasedCoinService;
         }
-        // GET: api/<PurchasedCoinsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
         // GET api/<PurchasedCoinsController>/5
         [HttpGet]
         [Route("GetPurchase")]
-        public string GetPurchasedCoin(Guid walletId, string coinId)
+        public async Task<ActionResult> GetPurchase(Guid walletId, string coinId)
         {
-            return "value";
+            var purchase = await _purchasedCoinService.GetPurchase(walletId, coinId);
+
+            if (!purchase.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = purchase.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok(purchase.Data);
+        }
+
+        [HttpGet]
+        [Route("GetPurchaseByUserId/{userId:Guid}")]
+        public async Task<ActionResult> GetPurchasesByUserId(Guid userId)
+        {
+            var purchases = await _purchasedCoinService.GetPurchasesByUserId(userId);
+
+            if (!purchases.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = purchases.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok(purchases.DataList);
         }
 
         // POST api/<PurchasedCoinsController>
-        [HttpPost]
+        [HttpPost("BuyCoin")]
         public async Task<ActionResult> PurchaseCoin(PurchaseCoinModel purchaseModel)
         {
             if (!ModelState.IsValid)
@@ -54,7 +80,7 @@ namespace CryptoTrading.API.Controllers
                 ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
                     ErrorMessage = e.InnerException.Message ?? e.Message,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                    StatusCode = HttpStatusCode.BadRequest
                 };
 
                 return BadRequest(errorResponse);
@@ -65,25 +91,51 @@ namespace CryptoTrading.API.Controllers
                 ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
                     ErrorMessage = purchase.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                    StatusCode = HttpStatusCode.BadRequest
                 };
 
                 return BadRequest(errorResponse);
             }
 
-            return CreatedAtAction(nameof(GetPurchasedCoin), new { wallet = purchase.Data.WalletId, coinId = purchase.Data.CoinId }, purchase.Data);
+            return CreatedAtAction(nameof(GetPurchase), new { wallet = purchase.Data.WalletId, coinId = purchase.Data.CoinId }, purchase.Data);
         }
 
-        // PUT api/<PurchasedCoinsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("SellCoin")]
+        public async Task<ActionResult> SellCoin(PurchaseCoinModel purchaseModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            GenericDomainModel<PurchasedCoinDomainModel> sellCoin;
+            try
+            {
+                sellCoin = await _purchasedCoinService.SellCoinAsync(purchaseModel.WalletId, purchaseModel.CoinId, purchaseModel.Amount);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            if (!sellCoin.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = sellCoin.ErrorMessage,
+                    StatusCode = HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return CreatedAtAction(nameof(GetPurchase), new { wallet = sellCoin.Data.WalletId, coinId = sellCoin.Data.CoinId }, sellCoin.Data);
         }
 
-        // DELETE api/<PurchasedCoinsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.API.Mapper
 {
-    public class ContollersProfileMapper : Profile
+    public class ControllersProfileMapper : Profile
     {
-        public ContollersProfileMapper()
+        public ControllersProfileMapper()
         {
             CreateMap<CreateUserModel,UserDomainModel>().AfterMap((src, dest) => { dest.Role = "user"; 
                                                                                    dest.Id = Guid.NewGuid(); });
 
             CreateMap<CreateWalletModel, WalletDomainModel>().AfterMap((src, dest) => {dest.Id = Guid.NewGuid();  
                                                                                        dest.Profit = 0;});
+            CreateMap<UpdateUserModel, UserDomainModel>();
         }
     }
 }
