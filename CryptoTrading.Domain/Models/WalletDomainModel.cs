@@ -10,7 +10,7 @@ namespace CryptoTrading.Domain.Models
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public double Balance { get; set; }
-        public double? Profit { get; set; }
+        public decimal Balance { get; set; }
+        public decimal Profit { get; set; }
     }
 }

@@ -9,9 +9,9 @@ namespace CryptoTrading.Domain.Interfaces
 {
     public interface IWalletService
     {
-        Task<GenericDomainModel<WalletDomainModel>> CreateWallet(WalletDomainModel newWallet);
-        Task<GenericDomainModel<WalletDomainModel>> GetWalletByUserId(Guid userId);
-        Task<GenericDomainModel<WalletDomainModel>> GetById(Guid walletId);
-        Task<GenericDomainModel<WalletDomainModel>> UpdateWalletBalanceAsync(Guid userId, double balanceChange);
+        Task<GenericDomainModel<WalletDomainModel>> CreateWalletAsync(WalletDomainModel newWallet);
+        Task<GenericDomainModel<WalletDomainModel>> GetWalletByUserIdAsync(Guid userId);
+        Task<GenericDomainModel<WalletDomainModel>> GetByIdAsync(Guid walletId);
+        Task<GenericDomainModel<WalletDomainModel>> UpdateWalletBalanceAsync(Guid userId, decimal balanceChange);
     }
 }

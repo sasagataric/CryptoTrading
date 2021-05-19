@@ -35,7 +35,7 @@ namespace CryptoTrading.Domain.Services
             _usersRepository = usersRepository;
         }
 
-        public async Task<GenericDomainModel<PurchasedCoinDomainModel>> BuyCoinAsync(Guid walletId, string coinId, double coinAmount)
+        public async Task<GenericDomainModel<PurchasedCoinDomainModel>> BuyCoinAsync(Guid walletId, string coinId, decimal coinAmount)
         {
             var wallet = await _walletRepository.GetByIdAsync(walletId);
             if (wallet == null)
@@ -60,7 +60,7 @@ namespace CryptoTrading.Domain.Services
             }
 
             var currentPrice = coinCurrantData[0].CurrentPrice;
-            if (currentPrice != null && wallet.Balance < (double)currentPrice * coinAmount)
+            if (currentPrice != null && wallet.Balance < currentPrice * (decimal?) coinAmount)
             {
                 return new GenericDomainModel<PurchasedCoinDomainModel>
                 {
@@ -68,6 +68,10 @@ namespace CryptoTrading.Domain.Services
                     ErrorMessage = Messages.WALLET_INSUFFICIENT_FOUNDS
                 };
             }
+
+            var price = coinCurrantData[0].CurrentPrice;
+            if (price != null)
+                wallet.Balance -= price ?? 0 * coinAmount;
 
             var checkPurchasedCoin = await _purchasedCoinsRepository.GetPurchasedCoinAsync(walletId, coinId);
             if (checkPurchasedCoin != null)
@@ -96,9 +100,6 @@ namespace CryptoTrading.Domain.Services
                 }
             }
 
-            var price = coinCurrantData[0].CurrentPrice;
-            if (price != null)
-                wallet.Balance -= (double) price * coinAmount;
 
             await _purchasedCoinsRepository.SaveAsync();
 
@@ -109,7 +110,7 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public async Task<GenericDomainModel<PurchasedCoinDomainModel>> SellCoinAsync(Guid walletId, string coinId, double coinAmount)
+        public async Task<GenericDomainModel<PurchasedCoinDomainModel>> SellCoinAsync(Guid walletId, string coinId, decimal coinAmount)
         {
             var wallet = await _walletRepository.GetByIdAsync(walletId);
             if (wallet == null)
@@ -153,7 +154,7 @@ namespace CryptoTrading.Domain.Services
             purchasedCoin.Amount -= coinAmount;
 
             if (coinCurrantData[0].CurrentPrice != null)
-                wallet.Balance += coinAmount * (double) coinCurrantData[0].CurrentPrice;
+                wallet.Balance += coinAmount * coinCurrantData[0].CurrentPrice ?? 0;
 
             if (purchasedCoin.Amount == 0)
             {

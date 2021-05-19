@@ -12,6 +12,6 @@ namespace CryptoTrading.Domain.Models
         public CoinDomainModel Coin { get; set; }
         public Guid WalletId { get; set; }
         public WalletDomainModel Wallet { get; set; }
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

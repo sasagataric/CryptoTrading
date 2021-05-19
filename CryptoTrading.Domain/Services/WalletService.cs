@@ -33,7 +33,7 @@ namespace CryptoTrading.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<GenericDomainModel<WalletDomainModel>> CreateWallet(WalletDomainModel newWallet)
+        public async Task<GenericDomainModel<WalletDomainModel>> CreateWalletAsync(WalletDomainModel newWallet)
         {
             var checkUserId = await _usersRepository.GetByIdAsync(newWallet.UserId);
             if (checkUserId == null)
@@ -45,8 +45,8 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            var CheckUserWallet = await _walletRepository.GetByUserIdAsync(newWallet.UserId);
-            if (CheckUserWallet != null)
+            var checkUserWallet = await _walletRepository.GetByUserIdAsync(newWallet.UserId);
+            if (checkUserWallet != null)
             {
                 return new GenericDomainModel<WalletDomainModel>
                 {
@@ -75,7 +75,7 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public async Task<GenericDomainModel<WalletDomainModel>> GetById(Guid walletId)
+        public async Task<GenericDomainModel<WalletDomainModel>> GetByIdAsync(Guid walletId)
         {
             var wallet = await _walletRepository.GetByIdAsync(walletId);
             if (wallet == null)
@@ -93,7 +93,7 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public async Task<GenericDomainModel<WalletDomainModel>> GetWalletByUserId(Guid userId)
+        public async Task<GenericDomainModel<WalletDomainModel>> GetWalletByUserIdAsync(Guid userId)
         {
             var checkUserId = await _usersRepository.GetByIdAsync(userId);
             if (checkUserId == null)
@@ -122,7 +122,7 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public async Task<GenericDomainModel<WalletDomainModel>> UpdateWalletBalanceAsync(Guid userId, double balanceChange)
+        public async Task<GenericDomainModel<WalletDomainModel>> UpdateWalletBalanceAsync(Guid userId, decimal balanceChange)
         {
             var checkUserId = await _usersRepository.GetByIdAsync(userId);
             if (checkUserId == null)
