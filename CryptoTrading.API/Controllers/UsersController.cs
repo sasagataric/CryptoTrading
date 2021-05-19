@@ -45,7 +45,7 @@ namespace CryptoTrading.API.Controllers
         }
 
         // GET api/<UsersController>/5
-        [HttpGet("GetById/{userId:Guid}")]
+        [HttpGet("GetByIdAsync/{userId:Guid}")]
         public async Task<ActionResult> GetUserById(Guid userId)
         {
             var user = await _userService.GetByIdAsync(userId);

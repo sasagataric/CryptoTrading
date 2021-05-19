@@ -25,28 +25,54 @@ namespace CryptoTrading.API.Controllers
             _walletService = walletService;
             _mapper = mapper;
         }
-        // GET: api/<WalletsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Route("getById/{id:Guid}")]
+        public async Task<ActionResult> GetById(Guid id)
         {
-            return new string[] { "value1", "value2" };
+            var wallet = await _walletService.GetByIdAsync(id);
+
+            if (!wallet.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = wallet.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok(wallet.Data);
         }
 
-        // GET api/<WalletsController>/5
-        [HttpGet("{id}")]
-        public string GetById(int id)
+        [HttpGet]
+        [Route("getByUserId/{id:Guid}")]
+        public async Task<ActionResult> GetByUserId(Guid id)
         {
-            return "value";
+            var wallet =await _walletService.GetWalletByUserIdAsync(id);
+
+            if (!wallet.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = wallet.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok(wallet.Data);
         }
 
         // POST api/<WalletsController>
         [HttpPost]
-        public async Task<ActionResult> Post(CreateWalletModel model)
+        public async Task<ActionResult> CreateWallet(CreateWalletModel model)
         { 
             GenericDomainModel<WalletDomainModel> createdWallet;
             try
             {
-                createdWallet = await _walletService.CreateWallet(_mapper.Map<WalletDomainModel>(model));
+                createdWallet = await _walletService.CreateWalletAsync(_mapper.Map<WalletDomainModel>(model));
             }
             catch (DbUpdateException e)
             {
@@ -73,16 +99,5 @@ namespace CryptoTrading.API.Controllers
             return CreatedAtAction(nameof(GetById), new { Id = createdWallet.Data.Id }, createdWallet.Data);
         }
 
-        // PUT api/<WalletsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<WalletsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

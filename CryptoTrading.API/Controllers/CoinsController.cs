@@ -1,4 +1,5 @@
-﻿using CryptoTrading.API.Models;
+﻿using System;
+using CryptoTrading.API.Models;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,63 @@ namespace CryptoTrading.API.Controllers
                 return BadRequest(errorResponse);
             }
             return Ok(coin.Data);
+        }
+
+        [HttpGet]
+        [Route("watchList/byUserId/{id:Guid}")]
+        public async Task<ActionResult> GetWatchListCoinsByUserId(Guid id)
+        {
+            var coins = await _coinService.GetWatchListCoinsByUserIdAsync(id);
+            if (!coins.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = coins.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+            return Ok(coins.DataList);
+        }
+
+        [HttpPost]
+        [Route("watchList/addForUser")]
+        public async Task<ActionResult> AddToWatchList(AddCoinToWatchListModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            GenericDomainModel<CoinDomainModel> addedCoin;
+            try
+            {
+                addedCoin = await _coinService.addCoinToWatchListAsync(model.UserId,model.CoinId);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            if (!addedCoin.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = addedCoin.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok();
         }
 
         [HttpPost]
