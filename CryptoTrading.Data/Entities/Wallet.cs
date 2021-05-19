@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,10 @@ namespace CryptoTrading.Data.Entities
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
-        public double Balance { get; set; }
-        public double? Profit { get; set; }
+        [Column(TypeName = "decimal(18,10)")]
+        public decimal Balance { get; set; }
+        [Column(TypeName = "decimal(18,10)")]
+        public decimal Profit { get; set; }
         public ICollection<Coin> Coins { get; set; }
         public ICollection<PurchasedCoin> PurchasedCoin { get; set; }
         public ICollection<WalletHistory> WalletHistorys { get; set; }

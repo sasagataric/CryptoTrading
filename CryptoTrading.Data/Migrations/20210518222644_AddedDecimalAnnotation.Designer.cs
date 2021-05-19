@@ -4,14 +4,16 @@ using CryptoTrading.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CryptoTrading.Data.Migrations
 {
     [DbContext(typeof(CryptoTradingContext))]
-    partial class CryptoTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20210518222644_AddedDecimalAnnotation")]
+    partial class AddedDecimalAnnotation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,15 +23,15 @@ namespace CryptoTrading.Data.Migrations
 
             modelBuilder.Entity("CoinUser", b =>
                 {
+                    b.Property<string>("CoinsId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<Guid>("UsersId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("WatchListCoinsId")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasKey("CoinsId", "UsersId");
 
-                    b.HasKey("UsersId", "WatchListCoinsId");
-
-                    b.HasIndex("WatchListCoinsId");
+                    b.HasIndex("UsersId");
 
                     b.ToTable("WatchList");
                 });
@@ -152,15 +154,15 @@ namespace CryptoTrading.Data.Migrations
 
             modelBuilder.Entity("CoinUser", b =>
                 {
-                    b.HasOne("CryptoTrading.Data.Entities.User", null)
+                    b.HasOne("CryptoTrading.Data.Entities.Coin", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("CoinsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CryptoTrading.Data.Entities.Coin", null)
+                    b.HasOne("CryptoTrading.Data.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("WatchListCoinsId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
