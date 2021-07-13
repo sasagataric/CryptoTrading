@@ -18,13 +18,14 @@ namespace CryptoTrading.Domain.Services
         private readonly ICoinsRepository _coinsRepository;
         private readonly CoinGecko.Interfaces.ICoinGeckoClient _coinGeckoClient;
         private readonly IMapper _mapper;
+        private readonly IWalletHistoryRepository _walletHistoryRepository;
 
         public PurchasedCoinService(IWalletsRepositor walletRepository,
                                     IPurchasedCoinsRepository purchasedCoinsRepository,
                                     ICoinsRepository coinsRepository,
                                     CoinGecko.Interfaces.ICoinGeckoClient coinGeckoClient,
                                     IMapper mapper, 
-                                    IUsersRepository usersRepository)
+                                    IUsersRepository usersRepository, IWalletHistoryRepository walletHistoryRepository)
         {
             _walletRepository = walletRepository;
 
@@ -33,6 +34,7 @@ namespace CryptoTrading.Domain.Services
             _coinGeckoClient = coinGeckoClient;
             _mapper = mapper;
             _usersRepository = usersRepository;
+            _walletHistoryRepository = walletHistoryRepository;
         }
 
         public async Task<GenericDomainModel<PurchasedCoinDomainModel>> BuyCoinAsync(Guid walletId, string coinId, decimal coinAmount)
@@ -49,7 +51,7 @@ namespace CryptoTrading.Domain.Services
 
             var coin = await _coinsRepository.GetByIdAsync(coinId);
 
-            var coinCurrantData = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", new[] { coinId }, "market_cap_desc", 3, 1, false, "", "");
+            var coinCurrantData = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", new[] { coinId }, "market_cap_desc", null, null, false, "", "");
             if (coinCurrantData == null)
             {
                 return new GenericDomainModel<PurchasedCoinDomainModel>
@@ -100,6 +102,17 @@ namespace CryptoTrading.Domain.Services
                 }
             }
 
+            var histoy = new WalletHistory
+            {
+                TransactionDate = DateTime.Now,
+                WalletId = walletId,
+                CoinId = coinId,
+                CoinPrice = coinCurrantData[0].CurrentPrice ?? 0,
+                Amount = coinAmount
+            };
+
+            await _walletHistoryRepository.InsertAsync(histoy);
+
 
             await _purchasedCoinsRepository.SaveAsync();
 
@@ -132,7 +145,7 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            var coinCurrantData = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", new[] { coinId }, "market_cap_desc", 3, 1, false, "", "");
+            var coinCurrantData = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", new[] { coinId }, "market_cap_desc", null, null, false, "", "");
             if (coinCurrantData == null)
             {
                 return new GenericDomainModel<PurchasedCoinDomainModel>
@@ -155,6 +168,19 @@ namespace CryptoTrading.Domain.Services
 
             if (coinCurrantData[0].CurrentPrice != null)
                 wallet.Balance += coinAmount * coinCurrantData[0].CurrentPrice ?? 0;
+
+
+            var histoy = new WalletHistory
+            {
+                TransactionDate = DateTime.Now,
+                WalletId = walletId,
+                CoinId = coinId,
+                CoinPrice = coinCurrantData[0].CurrentPrice ?? 0,
+                Amount = -coinAmount
+            };
+
+            await _walletHistoryRepository.InsertAsync(histoy);
+
 
             if (purchasedCoin.Amount == 0)
             {

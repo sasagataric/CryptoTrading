@@ -9,10 +9,20 @@ namespace CryptoTrading.Domain.Mapper
         public ServicesProfileMapper()
         {
             CreateMap<User, UserDomainModel>().ReverseMap();
-            CreateMap<Wallet, WalletDomainModel>().ReverseMap();
+
+            CreateMap<Wallet, WalletDomainModel>()
+                .ForMember(dest => dest.PurchasedCoins, opt => opt.MapFrom(src => src.PurchasedCoin))
+                .ReverseMap();
+
             CreateMap<CoinGecko.Entities.Response.Coins.CoinMarkets, Coin>().ReverseMap();
+
             CreateMap<CoinDomainModel, Coin>().ReverseMap();
+
             CreateMap<PurchasedCoin, PurchasedCoinDomainModel>().ReverseMap();
+
+            CreateMap<WalletHistory, WalletHistoryModel>()
+                .ForMember(dest => dest.CoinPriceAtTheTime, opt => opt.MapFrom(src => src.CoinPrice))
+                .ReverseMap();
         }
     }
 }
