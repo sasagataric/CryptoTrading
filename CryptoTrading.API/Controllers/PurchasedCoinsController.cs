@@ -97,7 +97,7 @@ namespace CryptoTrading.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return CreatedAtAction(nameof(GetPurchase), new { wallet = purchase.Data.WalletId, coinId = purchase.Data.CoinId }, purchase.Data);
+            return CreatedAtAction(nameof(GetPurchase), new { wallet = purchase.Data.WalletId, coinId = purchase.Data.Coin.Id }, purchase.Data);
         }
 
         [HttpPost("SellCoin")]
@@ -134,7 +134,7 @@ namespace CryptoTrading.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return CreatedAtAction(nameof(GetPurchase), new { wallet = sellCoin.Data.WalletId, coinId = sellCoin.Data.CoinId }, sellCoin.Data);
+            return CreatedAtAction(nameof(GetPurchase), new { wallet = sellCoin.Data.WalletId, coinId = sellCoin.Data.Coin.Id }, sellCoin.Data);
         }
 
     }

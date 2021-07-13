@@ -24,19 +24,19 @@ namespace CryptoTrading.Repositories
         }
         public async Task<IEnumerable<Wallet>> GetAllAsync()
         {
-            var data = await _cryptoTradingContext.Wallets.ToListAsync();
+            var data = await _cryptoTradingContext.Wallets.Include(w => w.PurchasedCoin).ToListAsync();
             return data;
         }
 
         public async Task<Wallet> GetByIdAsync(object id)
         {
-            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.Id==(Guid)id).FirstOrDefaultAsync();
+            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.Id==(Guid)id).Include(w=>w.PurchasedCoin).FirstOrDefaultAsync();
             return data;
         }
 
         public async Task<Wallet> GetByWalletIdAsync(Guid walletId)
         {
-            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.Id == walletId).FirstOrDefaultAsync();
+            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.Id == walletId).Include(w => w.PurchasedCoin).FirstOrDefaultAsync();
             return data;
         }
 
@@ -66,7 +66,7 @@ namespace CryptoTrading.Repositories
 
         public async Task<Wallet> GetByUserIdAsync(Guid userId)
         {
-            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.UserId == userId).FirstOrDefaultAsync();
+            var data = await _cryptoTradingContext.Wallets.Where(Wallet => Wallet.UserId == userId).Include(w => w.PurchasedCoin).FirstOrDefaultAsync();
             return data;
         }
     }

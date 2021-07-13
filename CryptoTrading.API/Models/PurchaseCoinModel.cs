@@ -14,7 +14,8 @@ namespace CryptoTrading.API.Models
         public string CoinId { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue, ErrorMessage = "Please enter Amount bigger than {0}")]
+        //[RegularExpression(@"^\d+\.\d{0,10}$", ErrorMessage = "It cannot have more than one decimal point value")]
+        [Range(0, 9999999999999999.9999999999, ErrorMessage = "Please enter Amount bigger than {0}")]
         public decimal Amount { get; set; }
     }
 }
