@@ -21,15 +21,15 @@ namespace CryptoTrading.Data.Migrations
 
             modelBuilder.Entity("CoinUser", b =>
                 {
+                    b.Property<string>("CoinsId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<Guid>("UsersId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("WatchListCoinsId")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasKey("CoinsId", "UsersId");
 
-                    b.HasKey("UsersId", "WatchListCoinsId");
-
-                    b.HasIndex("WatchListCoinsId");
+                    b.HasIndex("UsersId");
 
                     b.ToTable("WatchList");
                 });
@@ -84,6 +84,9 @@ namespace CryptoTrading.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
@@ -152,15 +155,15 @@ namespace CryptoTrading.Data.Migrations
 
             modelBuilder.Entity("CoinUser", b =>
                 {
-                    b.HasOne("CryptoTrading.Data.Entities.User", null)
+                    b.HasOne("CryptoTrading.Data.Entities.Coin", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("CoinsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CryptoTrading.Data.Entities.Coin", null)
+                    b.HasOne("CryptoTrading.Data.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("WatchListCoinsId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

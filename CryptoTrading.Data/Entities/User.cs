@@ -15,6 +15,7 @@ namespace CryptoTrading.Data.Entities
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public string ProfilePicture { get; set; }
         public ICollection<Coin> Coins { get; set; }
         public Wallet Wallet { get; set; }
     }
