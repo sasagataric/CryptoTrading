@@ -79,7 +79,7 @@ namespace CryptoTrading.Domain.Services
 
         public async Task<GenericDomainModel<UserDomainModel>> GetByUserEmailAsync(string email)
         {
-            var user = await _usersRepository.GetByUserNameAsync(email);
+            var user = await _usersRepository.GetByEmailAsync(email);
             if (user == null)
             {
                 return new GenericDomainModel<UserDomainModel>

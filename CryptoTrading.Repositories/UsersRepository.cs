@@ -15,6 +15,7 @@ namespace CryptoTrading.Repositories
         Task<User> GetByUserNameAsync(string username);
         Task<bool> CheckUsername(string username);
         Task<bool> CheckEmail(string email);
+        Task<User> GetByEmailAsync(string email);
     }
     public class UsersRepository : IUsersRepository
     {
@@ -66,7 +67,7 @@ namespace CryptoTrading.Repositories
             return data;
         }
 
-        public async Task<User> GetByUserEmail(string email)
+        public async Task<User> GetByEmailAsync(string email)
         {
             var data = await _cryptoTradingContext.Users.Where(x => x.Email == email).Include(u => u.Coins).FirstOrDefaultAsync();
 
