@@ -12,7 +12,7 @@ namespace CryptoTrading.Tests
     [TestClass]
     public class UnitTest1
     {
-        private CryptoCoinsControler _cryptoCoinsControler;
+        private CryptoCoinsController _cryptoCoinsControler;
 
         private Mock<CoinGecko.Interfaces.ICoinGeckoClient> _mockCoinGeckoClient;
 
@@ -21,7 +21,7 @@ namespace CryptoTrading.Tests
         {
             _mockCoinGeckoClient = new Mock<CoinGecko.Interfaces.ICoinGeckoClient>();
 
-            _cryptoCoinsControler = new CryptoCoinsControler( _mockCoinGeckoClient.Object);
+            _cryptoCoinsControler = new CryptoCoinsController( _mockCoinGeckoClient.Object);
 
         }
 

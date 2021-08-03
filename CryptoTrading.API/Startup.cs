@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using CryptoTrading.Domain.Mapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CryptoTrading.API
 {
@@ -30,7 +32,20 @@ namespace CryptoTrading.API
                 options.UseSqlServer(Configuration.GetConnectionString("CryptoTradingConnection"))
 
             );
-           
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(o =>
+            {
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(o =>
+            {
+                o.Authority = "http://localhost:17640";
+                o.Audience = "Test.WebApi";
+                o.RequireHttpsMetadata = false;
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -59,7 +74,6 @@ namespace CryptoTrading.API
             services.AddTransient<IWalletHistoryService, WalletHistoryService>();
 
 
-
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
                     corsBuilder => corsBuilder.WithOrigins("http://localhost:3000")
@@ -79,9 +93,13 @@ namespace CryptoTrading.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptoTrading.API v1"));
             }
 
+            app.UseCors("CorsPolicy");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -5,12 +5,12 @@ namespace CryptoTrading.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CryptoCoinsControler : ControllerBase
+    public class CryptoCoinsController : ControllerBase
     {
 
         private readonly CoinGecko.Interfaces.ICoinGeckoClient _coinGeckoClient;
 
-        public CryptoCoinsControler(CoinGecko.Interfaces.ICoinGeckoClient coinGeckoClient)
+        public CryptoCoinsController(CoinGecko.Interfaces.ICoinGeckoClient coinGeckoClient)
         {
             _coinGeckoClient = coinGeckoClient;
             
