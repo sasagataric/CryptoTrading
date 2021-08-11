@@ -13,6 +13,8 @@ using Microsoft.OpenApi.Models;
 using CryptoTrading.Domain.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
+using CryptoTrading.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace CryptoTrading.API
 {
@@ -28,10 +30,21 @@ namespace CryptoTrading.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
             services.AddDbContext<CryptoTradingContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CryptoTradingConnection"))
-
             );
+
+
+            services.AddIdentity<User, AppRole>()
+               .AddEntityFrameworkStores<CryptoTradingContext>()
+               .AddDefaultTokenProviders();
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("Admin", policy => policy.RequireClaim("scope", "admin"));
+            });
+
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(o =>
