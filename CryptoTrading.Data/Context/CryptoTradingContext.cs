@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CryptoTrading.Data.Context
 {
-    public class CryptoTradingContext : DbContext
+    public class CryptoTradingContext : IdentityDbContext<User,AppRole,Guid>
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
@@ -22,6 +23,8 @@ namespace CryptoTrading.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Wallet>()
                 .HasMany(c => c.Coins)
                 .WithMany(w => w.Wallets)
