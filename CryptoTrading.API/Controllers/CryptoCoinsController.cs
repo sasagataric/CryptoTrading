@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
+//FOR TESTING
 namespace CryptoTrading.API.Controllers
 {
     [ApiController]

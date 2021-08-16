@@ -21,9 +21,7 @@ namespace CryptoTrading.API.Controllers
             _purchasedCoinService = purchasedCoinService;
         }
 
-        // GET api/<PurchasedCoinsController>/5
-        [HttpGet]
-        [Route("GetPurchase")]
+        [HttpGet("{walletId:Guid}&{coinId}")]
         public async Task<ActionResult> GetPurchase(Guid walletId, string coinId)
         {
             var purchase = await _purchasedCoinService.GetPurchase(walletId, coinId);
@@ -43,7 +41,7 @@ namespace CryptoTrading.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetPurchaseByUserId/{userId:Guid}")]
+        [Route("{userId:Guid}")]
         public async Task<ActionResult> GetPurchasesByUserId(Guid userId)
         {
             var purchases = await _purchasedCoinService.GetPurchasesByUserId(userId);
@@ -63,7 +61,7 @@ namespace CryptoTrading.API.Controllers
         }
 
         // POST api/<PurchasedCoinsController>
-        [HttpPost("BuyCoin")]
+        [HttpPost("buy")]
         public async Task<ActionResult> PurchaseCoin(PurchaseCoinModel purchaseModel)
         {
             if (!ModelState.IsValid)
@@ -100,7 +98,7 @@ namespace CryptoTrading.API.Controllers
             return CreatedAtAction(nameof(GetPurchase), new { wallet = purchase.Data.WalletId, coinId = purchase.Data.Coin.Id }, purchase.Data);
         }
 
-        [HttpPost("SellCoin")]
+        [HttpPost("sell")]
         public async Task<ActionResult> SellCoin(PurchaseCoinModel purchaseModel)
         {
             if (!ModelState.IsValid)

@@ -26,10 +26,10 @@ namespace CryptoTrading.API.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        [Route("getById/{id:Guid}")]
-        public async Task<ActionResult> GetById(Guid id)
+        [Route("{walletId:Guid}")]
+        public async Task<ActionResult> GetById(Guid walletId)
         {
-            var wallet = await _walletService.GetByIdAsync(id);
+            var wallet = await _walletService.GetByIdAsync(walletId);
 
             if (!wallet.IsSuccessful)
             {
@@ -46,10 +46,13 @@ namespace CryptoTrading.API.Controllers
         }
 
         [HttpGet]
-        [Route("getByUserId/{id:Guid}")]
-        public async Task<ActionResult> GetByUserId(Guid id)
+        [Route("user/{userId:Guid}")]
+        public async Task<ActionResult> GetByUserId(Guid userId)
         {
-            var wallet =await _walletService.GetWalletByUserIdAsync(id);
+            // Getting user id from access token
+            //var userId = User.FindFirst("sub")?.Value;
+
+            var wallet =await _walletService.GetWalletByUserIdAsync(userId);
 
             if (!wallet.IsSuccessful)
             {
@@ -65,7 +68,7 @@ namespace CryptoTrading.API.Controllers
             return Ok(wallet.Data);
         }
 
-        // POST api/<WalletsController>
+        
         [HttpPost]
         public async Task<ActionResult> CreateWallet(CreateWalletModel model)
         { 
