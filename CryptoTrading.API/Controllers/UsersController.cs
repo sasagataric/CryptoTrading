@@ -8,23 +8,30 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CryptoTrading.Domain.Common;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CryptoTrading.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UsersController(IUserService userService, IMapper mapper)
+        private readonly ICoinService _coinService;
+
+        public UsersController(IUserService userService, IMapper mapper, ICoinService coinService)
         {
             _userService = userService;
             _mapper = mapper;
+            _coinService = coinService;
         }
-        // GET: api/<UsersController>
-        [HttpGet("GetAll")]
+
+        [Authorize(Policy ="Admin")]
+        [HttpGet]
         public async Task<ActionResult> GetAllUser()
         {
             var users = await _userService.GetAllAsync();
@@ -43,8 +50,7 @@ namespace CryptoTrading.API.Controllers
             return Ok(users.DataList);
         }
 
-        // GET api/<UsersController>/5
-        [HttpGet("GetByIdAsync/{userId:Guid}")]
+        [HttpGet("{userId:Guid}")]
         public async Task<ActionResult> GetUserById(Guid userId)
         {
             var user = await _userService.GetByIdAsync(userId);
@@ -63,8 +69,64 @@ namespace CryptoTrading.API.Controllers
             return Ok(user.Data);
         }
 
-        // POST api/<UsersController>
-        [HttpPost("Create")]
+        [HttpGet]
+        [Route("{userId:Guid}/watch-list")]
+        public async Task<ActionResult> GetWatchListCoinsByUserId(Guid userId)
+        {
+            var coins = await _coinService.GetWatchListCoinsByUserIdAsync(userId);
+            if (!coins.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = coins.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+            return Ok(coins.DataList);
+        }
+
+        [HttpPost]
+        [Route("watch-list")]
+        public async Task<ActionResult> AddToWatchList(AddCoinToWatchListModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            GenericDomainModel<CoinDomainModel> addedCoin;
+            try
+            {
+                addedCoin = await _coinService.addCoinToWatchListAsync(model.UserId, model.CoinId);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            if (!addedCoin.IsSuccessful)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = addedCoin.ErrorMessage,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("create")]
         public async Task<ActionResult> CreateUserAsync(CreateUserModel createUser)
         {
             if (!ModelState.IsValid)
@@ -104,7 +166,7 @@ namespace CryptoTrading.API.Controllers
             return CreatedAtAction(nameof(GetUserById), new { Id = createdUser.Data.Id }, createdUser.Data);
         }
 
-        [HttpPut("Update/{userId:Guid}")]
+        [HttpPut("{userId:Guid}/update")]
         public async Task<ActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserModel updateUser)
         {
             if (userId == Guid.Empty)
@@ -137,8 +199,7 @@ namespace CryptoTrading.API.Controllers
             return Accepted(updatedUser.Data);
         }
 
-        // DELETE api/<UsersController>/5
-        [HttpDelete("Delete/{userId}")]
+        [HttpDelete("{userId:Guid}/delete")]
         public async Task<ActionResult> DeleteUser(Guid userId)
         {
             if (userId == Guid.Empty)

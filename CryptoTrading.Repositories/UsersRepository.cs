@@ -1,6 +1,7 @@
 ﻿using CryptoTrading.Data.Context;
 using CryptoTrading.Data.Entities;
 using CryptoTrading.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,8 @@ namespace CryptoTrading.Repositories
         }
         public User Delete(object id)
         {
-            var data = _cryptoTradingContext.Users.Find(id);
+            var user = (User)id;
+            var data = _cryptoTradingContext.Users.Find(user.Id);
             var deleted = _cryptoTradingContext.Users.Remove(data);
 
             return deleted.Entity;

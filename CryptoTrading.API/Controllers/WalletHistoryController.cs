@@ -20,21 +20,19 @@ namespace CryptoTrading.API.Controllers
         {
             _walletHistoryService = walletHistoryService;
         }
-        // GET: api/<WalletHistoryController>
+
         [HttpGet]
-        [Route("all")]
         public async Task<ActionResult> GetAll()
         {
             var historys =await _walletHistoryService.GetAllAsync();
             return Ok(historys.DataList);
         }
 
-        // GET api/<WalletHistoryController>/5
         [HttpGet]
-        [Route("getByWalletId/{id:Guid}")]
-        public async Task<ActionResult> GetById(Guid id)
+        [Route("{walletId:Guid}")]
+        public async Task<ActionResult> GetByWalletId(Guid walletId)
         {
-            var history =await _walletHistoryService.GetByWalletIdAsync(id);
+            var history =await _walletHistoryService.GetByWalletIdAsync(walletId);
 
             if (!history.IsSuccessful)
             {

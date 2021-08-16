@@ -22,10 +22,10 @@ namespace CryptoTrading.API.Controllers
         }
 
 
-        [HttpGet("getCoinById/{id}")]
-        public async Task<ActionResult> GetById(string id)
+        [HttpGet("{coinId}")]
+        public async Task<ActionResult> GetById(string coinId)
         {
-            var coin = await _coinService.GetByIdAsync(id);
+            var coin = await _coinService.GetByIdAsync(coinId);
             if (!coin.IsSuccessful)
             {
                 ErrorResponseModel errorResponse = new ErrorResponseModel
@@ -39,95 +39,38 @@ namespace CryptoTrading.API.Controllers
             return Ok(coin.Data);
         }
 
-        [HttpGet]
-        [Route("watchList/byUserId/{id:Guid}")]
-        public async Task<ActionResult> GetWatchListCoinsByUserId(Guid id)
-        {
-            var coins = await _coinService.GetWatchListCoinsByUserIdAsync(id);
-            if (!coins.IsSuccessful)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = coins.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
+        //[HttpPost("{coinId}")]
+        //public async Task<ActionResult> CreateCoin(string coinId)
+        //{
+        //    GenericDomainModel<CoinDomainModel> coin;
+        //    try
+        //    {
+        //        coin = await _coinService.CreateCoinAsync(coinId);
+        //    }
+        //    catch (DbUpdateException e)
+        //    {
+        //        ErrorResponseModel errorResponse = new ErrorResponseModel
+        //        {
+        //            ErrorMessage = e.InnerException.Message ?? e.Message,
+        //            StatusCode = System.Net.HttpStatusCode.BadRequest
+        //        };
 
-                return BadRequest(errorResponse);
-            }
-            return Ok(coins.DataList);
-        }
+        //        return BadRequest(errorResponse);
+        //    }
 
-        [HttpPost]
-        [Route("watchList/addForUser")]
-        public async Task<ActionResult> AddToWatchList(AddCoinToWatchListModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    if (!coin.IsSuccessful)
+        //    {
+        //        ErrorResponseModel errorResponse = new ErrorResponseModel
+        //        {
+        //            ErrorMessage = coin.ErrorMessage,
+        //            StatusCode = System.Net.HttpStatusCode.BadRequest
+        //        };
 
-            GenericDomainModel<CoinDomainModel> addedCoin;
-            try
-            {
-                addedCoin = await _coinService.addCoinToWatchListAsync(model.UserId,model.CoinId);
-            }
-            catch (DbUpdateException e)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
+        //        return BadRequest(errorResponse);
+        //    }
 
-                return BadRequest(errorResponse);
-            }
-
-            if (!addedCoin.IsSuccessful)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = addedCoin.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
-
-                return BadRequest(errorResponse);
-            }
-
-            return Ok();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> CreateCoin(string coinId)
-        {
-            GenericDomainModel<CoinDomainModel> coin;
-            try
-            {
-                coin = await _coinService.CreateCoinAsync(coinId);
-            }
-            catch (DbUpdateException e)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
-
-                return BadRequest(errorResponse);
-            }
-
-            if (!coin.IsSuccessful)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = coin.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
-
-                return BadRequest(errorResponse);
-            }
-
-            return CreatedAtAction(nameof(GetById), new { Id = coin.Data.Id }, coin.Data);
-        }
+        //    return CreatedAtAction(nameof(GetById), new { Id = coin.Data.Id }, coin.Data);
+        //}
 
     }
 }

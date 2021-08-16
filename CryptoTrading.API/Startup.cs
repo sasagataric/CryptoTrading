@@ -11,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using CryptoTrading.Domain.Mapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
+using CryptoTrading.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace CryptoTrading.API
 {
@@ -28,18 +32,34 @@ namespace CryptoTrading.API
         {
             services.AddDbContext<CryptoTradingContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CryptoTradingConnection"))
-
             );
-           
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
+
+            services.AddIdentity<User, AppRole>()
+               .AddEntityFrameworkStores<CryptoTradingContext>()
+               .AddDefaultTokenProviders();
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(o =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CryptoTrading.API", Version = "v1" });
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+                {
+                    o.Authority = "https://localhost:5443";
+                    o.Audience = "WebApi";
+                    o.RequireHttpsMetadata = false;
+                });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin"));
             });
 
-            services.AddAutoMapper(typeof(ControllersProfileMapper), typeof(ServicesProfileMapper));
-
+            services.AddControllers();
             services.AddHttpClient();
+
+            services.AddAutoMapper(typeof(ControllersProfileMapper), typeof(ServicesProfileMapper));
 
             services.AddTransient<CoinGecko.Interfaces.ICoinGeckoClient, CoinGecko.Clients.CoinGeckoClient>();
 
@@ -58,8 +78,10 @@ namespace CryptoTrading.API
             services.AddTransient<IPurchasedCoinService, PurchasedCoinService>();
             services.AddTransient<IWalletHistoryService, WalletHistoryService>();
 
-
-
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CryptoTrading.API", Version = "v1" });
+            });
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
                     corsBuilder => corsBuilder.WithOrigins("http://localhost:3000")
@@ -79,9 +101,13 @@ namespace CryptoTrading.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptoTrading.API v1"));
             }
 
+            app.UseCors("CorsPolicy");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -144,6 +144,7 @@ namespace CryptoTrading.Domain.Services
             }
 
             var deletedUser = _usersRepository.Delete(checkUser);
+            await _usersRepository.SaveAsync();
             return new GenericDomainModel<UserDomainModel>
             {
                 IsSuccessful = true,
