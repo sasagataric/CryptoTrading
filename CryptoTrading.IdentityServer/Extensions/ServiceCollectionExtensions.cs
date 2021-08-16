@@ -1,5 +1,6 @@
 ﻿using CryptoTrading.Data.Context;
 using CryptoTrading.Data.Entities;
+using CryptoTrading.IdentityServer.Configuration;
 using CryptoTrading.IdentityServer.ExternalGrant;
 using CryptoTrading.IdentityServer.Interfaces;
 using CryptoTrading.IdentityServer.Interfaces.Processors;
@@ -49,7 +50,9 @@ namespace CryptoTrading.IdentityServer.Extensions
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                         sql => sql.MigrationsAssembly(typeof(CryptoTradingContext).GetTypeInfo().Assembly.GetName().Name));
                 })
-                .AddAspNetIdentity<User>();
+                .AddAspNetIdentity<User>()
+                .AddExtensionGrantValidator<ExternalAuthenticationGrant<User>>()
+                .AddProfileService<CustomProfileService>();
 
             return services;
         }

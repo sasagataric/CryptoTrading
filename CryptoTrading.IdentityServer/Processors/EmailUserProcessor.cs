@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CryptoTrading.IdentityServer.Processors
@@ -36,10 +37,19 @@ namespace CryptoTrading.IdentityServer.Processors
                 return new GrantValidationResult(TokenRequestErrors.InvalidRequest, "User with specified email already exists");
             }
 
-            var newUser = new TUser { Email = userEmail, UserName = userEmail};
+            var newUser = new TUser
+            {
+                Email = userEmail,
+                UserName = userEmail,
+                FirstName = userInfo.Value<string>("given_name"),
+                LastName = userInfo.Value<string>("family_name"),
+                ProfilePicture = userInfo.Value<string>("picture")
+            }; 
+            
             var result = _userManager.CreateAsync(newUser).Result;
             if (result.Succeeded)
             {
+                //await _userManager.AddClaimAsync(newUser, new Claim("role", "Admin"));
                 await _userManager.AddLoginAsync(newUser, new UserLoginInfo(provider, userExternalId, provider));
                 var userClaims = _userManager.GetClaimsAsync(newUser).Result;
                 return new GrantValidationResult(newUser.Id.ToString(), provider, userClaims, provider, null);

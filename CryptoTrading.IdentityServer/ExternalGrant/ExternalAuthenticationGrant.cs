@@ -76,7 +76,6 @@ namespace CryptoTrading.IdentityServer.ExternalGrant
             var externalId = userInfo.Value<string>("id");
             if (!string.IsNullOrWhiteSpace(externalId))
             {
-
                 var user = await _userManager.FindByLoginAsync(provider, externalId);
                 if (null != user)
                 {
