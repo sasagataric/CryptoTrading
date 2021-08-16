@@ -7,6 +7,7 @@ Web API for simulating trading with cryptocurrencies using information obtained 
 <li>ASP.NET Core 5</li>
 <li>Entity Framewor</li>
 <li>Microsoft SQL Server</li>
-<li>AutoMapper</li>
+<li>IdentityServer4</li>
 <li>CoinGeckoAPI</li>
+<li>AutoMapper</li>
 </ul>
