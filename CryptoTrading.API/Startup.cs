@@ -46,7 +46,7 @@ namespace CryptoTrading.API
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
                 {
-                    o.Authority = "https://localhost:5443";
+                    o.Authority = Configuration.GetValue<string>("IdentityServerURL");
                     o.Audience = "WebApi";
                     o.RequireHttpsMetadata = false;
                 });
@@ -67,15 +67,15 @@ namespace CryptoTrading.API
             services.AddTransient<ICoinsRepository, CoinsRepository>();
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IWalletHistoryRepository, WalletHistoryRepository>();
-            services.AddTransient<IWalletsRepositor, WalletsRepository>();
-            services.AddTransient<IPurchasedCoinsRepository, PurchasedCoinsRepository>();
+            services.AddTransient<IWalletsRepository, WalletsRepository>();
+            services.AddTransient<IHoldingsRepository, HoldingsRepository>();
             services.AddTransient<IWalletHistoryRepository, WalletHistoryRepository>();
 
             //Service
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IWalletService, WalletService>();
             services.AddTransient<ICoinService, CoinService>();
-            services.AddTransient<IPurchasedCoinService, PurchasedCoinService>();
+            services.AddTransient<IHoldingService, HoldingService>();
             services.AddTransient<IWalletHistoryService, WalletHistoryService>();
 
             services.AddSwaggerGen(c =>
@@ -84,7 +84,7 @@ namespace CryptoTrading.API
             });
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
-                    corsBuilder => corsBuilder.WithOrigins("http://localhost:3000")
+                    corsBuilder => corsBuilder.WithOrigins(Configuration.GetValue<string>("ReactAppURL"))
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());

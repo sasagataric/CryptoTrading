@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CryptoTrading.API.Models;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,19 +13,20 @@ namespace CryptoTrading.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PurchasedCoinsController : ControllerBase
+    [Authorize]
+    public class HoldingsController : ControllerBase
     {
-        private readonly IPurchasedCoinService _purchasedCoinService;
+        private readonly IHoldingService _holdingService;
 
-        public PurchasedCoinsController(IPurchasedCoinService purchasedCoinService)
+        public HoldingsController(IHoldingService holdingService)
         {
-            _purchasedCoinService = purchasedCoinService;
+            _holdingService = holdingService;
         }
 
         [HttpGet("{walletId:Guid}&{coinId}")]
         public async Task<ActionResult> GetPurchase(Guid walletId, string coinId)
         {
-            var purchase = await _purchasedCoinService.GetPurchase(walletId, coinId);
+            var purchase = await _holdingService.GetPurchase(walletId, coinId);
 
             if (!purchase.IsSuccessful)
             {
@@ -44,7 +46,7 @@ namespace CryptoTrading.API.Controllers
         [Route("{userId:Guid}")]
         public async Task<ActionResult> GetPurchasesByUserId(Guid userId)
         {
-            var purchases = await _purchasedCoinService.GetPurchasesByUserId(userId);
+            var purchases = await _holdingService.GetPurchasesByUserId(userId);
 
             if (!purchases.IsSuccessful)
             {
@@ -62,16 +64,16 @@ namespace CryptoTrading.API.Controllers
 
         // POST api/<PurchasedCoinsController>
         [HttpPost("buy")]
-        public async Task<ActionResult> PurchaseCoin(PurchaseCoinModel purchaseModel)
+        public async Task<ActionResult> BuyCoin(HoldingModel purchaseModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            GenericDomainModel<PurchasedCoinDomainModel> purchase;
+            GenericDomainModel<HoldingDomainModel> purchase;
             try
             {
-                purchase = await _purchasedCoinService.BuyCoinAsync(purchaseModel.WalletId, purchaseModel.CoinId, purchaseModel.Amount);
+                purchase = await _holdingService.BuyCoinAsync(purchaseModel.WalletId, purchaseModel.CoinId, purchaseModel.Amount);
             }
             catch (DbUpdateException e)
             {
@@ -94,21 +96,20 @@ namespace CryptoTrading.API.Controllers
 
                 return BadRequest(errorResponse);
             }
-
-            return CreatedAtAction(nameof(GetPurchase), new { wallet = purchase.Data.WalletId, coinId = purchase.Data.Coin.Id }, purchase.Data);
+            return CreatedAtAction(nameof(GetPurchase), new { walletId = purchase.Data.WalletId, coinId = purchase.Data.Coin.Id }, purchase.Data);
         }
 
         [HttpPost("sell")]
-        public async Task<ActionResult> SellCoin(PurchaseCoinModel purchaseModel)
+        public async Task<ActionResult> SellCoin(HoldingModel purchaseModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            GenericDomainModel<PurchasedCoinDomainModel> sellCoin;
+            GenericDomainModel<HoldingDomainModel> sellCoin;
             try
             {
-                sellCoin = await _purchasedCoinService.SellCoinAsync(purchaseModel.WalletId, purchaseModel.CoinId, purchaseModel.Amount);
+                sellCoin = await _holdingService.SellCoinAsync(purchaseModel.WalletId, purchaseModel.CoinId, purchaseModel.Amount);
             }
             catch (DbUpdateException e)
             {
@@ -132,7 +133,7 @@ namespace CryptoTrading.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return CreatedAtAction(nameof(GetPurchase), new { wallet = sellCoin.Data.WalletId, coinId = sellCoin.Data.Coin.Id }, sellCoin.Data);
+            return CreatedAtAction(nameof(GetPurchase), new { walletId = sellCoin.Data.WalletId, coinId = sellCoin.Data.Coin.Id }, sellCoin.Data);
         }
 
     }

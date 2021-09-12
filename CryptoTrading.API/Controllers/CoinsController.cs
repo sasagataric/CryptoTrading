@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace CryptoTrading.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CoinsController : ControllerBase
     {
         private readonly ICoinService _coinService;
@@ -20,7 +21,6 @@ namespace CryptoTrading.API.Controllers
         {
             _coinService = coinService;
         }
-
 
         [HttpGet("{coinId}")]
         public async Task<ActionResult> GetById(string coinId)
@@ -38,39 +38,5 @@ namespace CryptoTrading.API.Controllers
             }
             return Ok(coin.Data);
         }
-
-        //[HttpPost("{coinId}")]
-        //public async Task<ActionResult> CreateCoin(string coinId)
-        //{
-        //    GenericDomainModel<CoinDomainModel> coin;
-        //    try
-        //    {
-        //        coin = await _coinService.CreateCoinAsync(coinId);
-        //    }
-        //    catch (DbUpdateException e)
-        //    {
-        //        ErrorResponseModel errorResponse = new ErrorResponseModel
-        //        {
-        //            ErrorMessage = e.InnerException.Message ?? e.Message,
-        //            StatusCode = System.Net.HttpStatusCode.BadRequest
-        //        };
-
-        //        return BadRequest(errorResponse);
-        //    }
-
-        //    if (!coin.IsSuccessful)
-        //    {
-        //        ErrorResponseModel errorResponse = new ErrorResponseModel
-        //        {
-        //            ErrorMessage = coin.ErrorMessage,
-        //            StatusCode = System.Net.HttpStatusCode.BadRequest
-        //        };
-
-        //        return BadRequest(errorResponse);
-        //    }
-
-        //    return CreatedAtAction(nameof(GetById), new { Id = coin.Data.Id }, coin.Data);
-        //}
-
     }
 }

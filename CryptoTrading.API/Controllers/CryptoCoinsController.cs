@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 //FOR TESTING
@@ -6,6 +7,7 @@ namespace CryptoTrading.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class CryptoCoinsController : ControllerBase
     {
 

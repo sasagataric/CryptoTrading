@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 using CryptoTrading.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Newtonsoft.Json;
 
 namespace CryptoTrading.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -49,7 +49,7 @@ namespace CryptoTrading.API.Controllers
 
             return Ok(users.DataList);
         }
-
+        [Authorize(Policy = "Admin")]
         [HttpGet("{userId:Guid}")]
         public async Task<ActionResult> GetUserById(Guid userId)
         {
@@ -71,9 +71,24 @@ namespace CryptoTrading.API.Controllers
 
         [HttpGet]
         [Route("{userId:Guid}/watch-list")]
-        public async Task<ActionResult> GetWatchListCoinsByUserId(Guid userId)
+        public async Task<ActionResult> GetWatchListByUserId(Guid userId)
         {
-            var coins = await _coinService.GetWatchListCoinsByUserIdAsync(userId);
+            GenericDomainModel<CoinGecko.Entities.Response.Coins.CoinMarkets> coins;
+            try
+            {
+                coins = await _coinService.GetWatchListByUserIdAsync(userId);
+            }
+            catch (DbUpdateException e)
+            {
+                ErrorResponseModel errorResponse = new ErrorResponseModel
+                {
+                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    StatusCode = System.Net.HttpStatusCode.BadRequest
+                };
+
+                return BadRequest(errorResponse);
+            }
+           
             if (!coins.IsSuccessful)
             {
                 ErrorResponseModel errorResponse = new ErrorResponseModel
@@ -84,12 +99,16 @@ namespace CryptoTrading.API.Controllers
 
                 return BadRequest(errorResponse);
             }
-            return Ok(coins.DataList);
+
+            string jsonData = JsonConvert.SerializeObject(coins.DataList, Formatting.Indented);
+
+            return Ok(jsonData);
+
         }
 
         [HttpPost]
-        [Route("watch-list")]
-        public async Task<ActionResult> AddToWatchList(AddCoinToWatchListModel model)
+        [Route("watch-list/add")]
+        public async Task<ActionResult> AddToWatchList([FromBody]WatchListModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -99,7 +118,7 @@ namespace CryptoTrading.API.Controllers
             GenericDomainModel<CoinDomainModel> addedCoin;
             try
             {
-                addedCoin = await _coinService.addCoinToWatchListAsync(model.UserId, model.CoinId);
+                addedCoin = await _coinService.AddCoinToWatchListAsync(model.UserId, model.CoinId);
             }
             catch (DbUpdateException e)
             {
@@ -126,20 +145,18 @@ namespace CryptoTrading.API.Controllers
             return Ok();
         }
 
-        [HttpPost("create")]
-        public async Task<ActionResult> CreateUserAsync(CreateUserModel createUser)
+        [Route("watch-list/remove")]
+        public async Task<ActionResult> RemoveFromWatchList([FromBody] WatchListModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var newUser = _mapper.Map<UserDomainModel>(createUser);
-
-            GenericDomainModel<UserDomainModel> createdUser;
+            GenericDomainModel<CoinDomainModel> addedCoin;
             try
             {
-                createdUser = await _userService.CreateUserAsync(newUser);
+                addedCoin = await _coinService.RemoveCoinFromWatchListAsync(model.UserId, model.CoinId);
             }
             catch (DbUpdateException e)
             {
@@ -152,53 +169,94 @@ namespace CryptoTrading.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            if (!createdUser.IsSuccessful)
+            if (!addedCoin.IsSuccessful)
             {
                 ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
-                    ErrorMessage = createdUser.ErrorMessage,
+                    ErrorMessage = addedCoin.ErrorMessage,
                     StatusCode = System.Net.HttpStatusCode.BadRequest
                 };
 
                 return BadRequest(errorResponse);
             }
 
-            return CreatedAtAction(nameof(GetUserById), new { Id = createdUser.Data.Id }, createdUser.Data);
+            return Ok();
         }
 
-        [HttpPut("{userId:Guid}/update")]
-        public async Task<ActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserModel updateUser)
-        {
-            if (userId == Guid.Empty)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = Messages.USER_ID_REQUIRED,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
-                return BadRequest(errorResponse);
-            }
+        //[HttpPost("create")]
+        //public async Task<ActionResult> CreateUserAsync(CreateUserModel createUser)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    var newUser = _mapper.Map<UserDomainModel>(createUser);
 
-            var updatedUser = await _userService.UpdateUserAsync(userId, _mapper.Map<UserDomainModel>(updateUser));
-            if (!updatedUser.IsSuccessful)
-            {
-                ErrorResponseModel errorResponse = new ErrorResponseModel
-                {
-                    ErrorMessage = updatedUser.ErrorMessage,
-                    StatusCode = System.Net.HttpStatusCode.BadRequest
-                };
+        //    GenericDomainModel<UserDomainModel> createdUser;
+        //    try
+        //    {
+        //        createdUser = await _userService.CreateUserAsync(newUser);
+        //    }
+        //    catch (DbUpdateException e)
+        //    {
+        //        ErrorResponseModel errorResponse = new ErrorResponseModel
+        //        {
+        //            ErrorMessage = e.InnerException.Message ?? e.Message,
+        //            StatusCode = System.Net.HttpStatusCode.BadRequest
+        //        };
 
-                return BadRequest(errorResponse);
-            }
+        //        return BadRequest(errorResponse);
+        //    }
 
-            return Accepted(updatedUser.Data);
-        }
+        //    if (!createdUser.IsSuccessful)
+        //    {
+        //        ErrorResponseModel errorResponse = new ErrorResponseModel
+        //        {
+        //            ErrorMessage = createdUser.ErrorMessage,
+        //            StatusCode = System.Net.HttpStatusCode.BadRequest
+        //        };
 
+        //        return BadRequest(errorResponse);
+        //    }
+
+        //    return CreatedAtAction(nameof(GetUserById), new { Id = createdUser.Data.Id }, createdUser.Data);
+        //}
+
+        //[HttpPut("{userId:Guid}/update")]
+        //public async Task<ActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserModel updateUser)
+        //{
+        //    if (userId == Guid.Empty)
+        //    {
+        //        ErrorResponseModel errorResponse = new ErrorResponseModel
+        //        {
+        //            ErrorMessage = Messages.USER_ID_REQUIRED,
+        //            StatusCode = System.Net.HttpStatusCode.BadRequest
+        //        };
+        //        return BadRequest(errorResponse);
+        //    }
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    var updatedUser = await _userService.UpdateUserAsync(userId, _mapper.Map<UserDomainModel>(updateUser));
+        //    if (!updatedUser.IsSuccessful)
+        //    {
+        //        ErrorResponseModel errorResponse = new ErrorResponseModel
+        //        {
+        //            ErrorMessage = updatedUser.ErrorMessage,
+        //            StatusCode = System.Net.HttpStatusCode.BadRequest
+        //        };
+
+        //        return BadRequest(errorResponse);
+        //    }
+
+        //    return Accepted(updatedUser.Data);
+        //}
+
+        [Authorize(Policy = "Admin")]
         [HttpDelete("{userId:Guid}/delete")]
         public async Task<ActionResult> DeleteUser(Guid userId)
         {

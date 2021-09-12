@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.API.Models
 {
-    public class AddCoinToWatchListModel
+    public class WatchListModel
     {
         [Required]
         [RegularExpression("^((?!00000000-0000-0000-0000-000000000000).)*$", ErrorMessage = "Cannot use default Guid")]
