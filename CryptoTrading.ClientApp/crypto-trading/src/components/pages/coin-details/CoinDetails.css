@@ -1,0 +1,70 @@
+.grid-divider {
+    overflow-x: hidden; 
+    position: relative;
+}
+
+.vertical-divider {
+  overflow: hidden !important;
+}
+
+.row.vertical-divider > div {
+  border-left: 0.5px solid #dee2e6 ;
+  border-right: 0.5px solid #dee2e6 ;
+}
+.vertical-divider div:first-child {
+  border-left: none !important;
+}
+.vertical-divider div:last-child {
+  border-right: none !important;
+}
+
+@media only screen and (max-width: 991px) {
+  .vertical-divider> div:first-child{
+      border-left: 1px solid #dee2e6 !important;
+  }
+  .vertical-divider> div:last-child{
+    border-right: 1px solid #dee2e6 !important;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  
+  .vertical-divider> div:first-child{
+    border-left: none !important;
+  }
+  .vertical-divider> div:last-child{
+    border-right: none !important;
+  }
+  .vertical-divider> div{
+      border: none !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      min-height: 5vh;
+  }
+  .vertical-divider{
+    border-bottom: none !important;
+
+  }
+}
+
+.tooltip > div.tooltip-inner {
+  background-color: white !important;
+  color: #58667e !important;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
+.tooltip.show {
+  opacity: 1 !important;
+}
+
+.tooltip > div.arrow::before {
+  border-bottom-color: white !important;
+  color: #58667e !important;
+}
+
+.link:hover{
+  background-color: #f0f0f0 !important;
+}
+
+a{
+  text-decoration: none;
+}

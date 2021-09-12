@@ -1,5 +1,7 @@
 ﻿using CryptoTrading.Data.Context;
 using CryptoTrading.Data.Entities;
+using CryptoTrading.Domain.Interfaces;
+using CryptoTrading.Domain.Services;
 using CryptoTrading.IdentityServer.Configuration;
 using CryptoTrading.IdentityServer.ExternalGrant;
 using CryptoTrading.IdentityServer.Interfaces;
@@ -8,6 +10,7 @@ using CryptoTrading.IdentityServer.Processors;
 using CryptoTrading.IdentityServer.Providers;
 using CryptoTrading.IdentityServer.Repository;
 using CryptoTrading.IdentityServer.Repository.Interfaces;
+using CryptoTrading.Repositories;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +64,7 @@ namespace CryptoTrading.IdentityServer.Extensions
             services.AddScoped<INonEmailUserProcessor, NonEmailUserProcessor<TUser>>();
             services.AddScoped<IEmailUserProcessor, EmailUserProcessor<TUser>>();
             services.AddScoped<IExtensionGrantValidator, ExternalAuthenticationGrant<TUser>>();
+            services.AddScoped<IWalletService, WalletService>();
             services.AddSingleton<HttpClient>();
             return services;
         }
@@ -68,6 +72,10 @@ namespace CryptoTrading.IdentityServer.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IProviderRepository, ProviderRepository>();
+            services.AddScoped<IWalletsRepository, WalletsRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
+
+
             return services;
         }
 

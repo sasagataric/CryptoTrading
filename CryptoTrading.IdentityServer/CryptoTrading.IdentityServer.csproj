@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CryptoTrading.Data\CryptoTrading.Data.csproj" />
+    <ProjectReference Include="..\CryptoTrading.Domain\CryptoTrading.Domain.csproj" />
   </ItemGroup>
 
 </Project>

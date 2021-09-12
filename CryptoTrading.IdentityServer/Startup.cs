@@ -1,5 +1,6 @@
 using CryptoTrading.Data.Context;
 using CryptoTrading.Data.Entities;
+using CryptoTrading.Domain.Mapper;
 using CryptoTrading.IdentityServer.Configuration;
 using CryptoTrading.IdentityServer.Extensions;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -7,17 +8,13 @@ using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+
 
 namespace CryptoTrading.IdentityServer
 {
@@ -38,11 +35,14 @@ namespace CryptoTrading.IdentityServer
                     .AddRepositories()
                     .AddProviders<User>();
 
+            services.AddAutoMapper(typeof(ServicesProfileMapper));
+
+
             services.AddSingleton<ICorsPolicyService>((container) => {
                 var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
                 return new DefaultCorsPolicyService(logger)
                 {
-                    AllowedOrigins = { "http://localhost:3000" }
+                    AllowedOrigins = { Configuration.GetValue<string>("ReactAppURL")}
                 };
             });
         }

@@ -81,7 +81,7 @@ namespace CryptoTrading.Data.Migrations
                     b.ToTable("Coins");
                 });
 
-            modelBuilder.Entity("CryptoTrading.Data.Entities.PurchasedCoin", b =>
+            modelBuilder.Entity("CryptoTrading.Data.Entities.Holding", b =>
                 {
                     b.Property<Guid>("WalletId")
                         .HasColumnType("uniqueidentifier");
@@ -92,11 +92,20 @@ namespace CryptoTrading.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,10)");
 
+                    b.Property<decimal>("AverageBuyingPrice")
+                        .HasColumnType("decimal(18,10)");
+
+                    b.Property<decimal>("AverageSellingPrice")
+                        .HasColumnType("decimal(18,10)");
+
+                    b.Property<DateTime>("DateOfFirstPurchase")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("WalletId", "CoinId");
 
                     b.HasIndex("CoinId");
 
-                    b.ToTable("PurchasedCoin");
+                    b.ToTable("Holdings");
                 });
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.User", b =>
@@ -184,10 +193,10 @@ namespace CryptoTrading.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,10)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Profit")
-                        .HasColumnType("decimal(18,10)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -346,7 +355,7 @@ namespace CryptoTrading.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CryptoTrading.Data.Entities.PurchasedCoin", b =>
+            modelBuilder.Entity("CryptoTrading.Data.Entities.Holding", b =>
                 {
                     b.HasOne("CryptoTrading.Data.Entities.Coin", "Coin")
                         .WithMany("PurchasedCoin")

@@ -1,4 +1,6 @@
 ﻿using CryptoTrading.Data.Entities;
+using CryptoTrading.Domain.Interfaces;
+using CryptoTrading.Domain.Models;
 using CryptoTrading.IdentityServer.Interfaces.Processors;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
@@ -15,10 +17,14 @@ namespace CryptoTrading.IdentityServer.Processors
     public class NonEmailUserProcessor<TUser> : INonEmailUserProcessor where TUser : User, new()
     {
         private readonly UserManager<TUser> _userManager;
+        private readonly IWalletService _walletService;
+
         public NonEmailUserProcessor(
-            UserManager<TUser> userManager
+            UserManager<TUser> userManager,
+            IWalletService walletService
             )
         {
+            _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
         public async Task<GrantValidationResult> ProcessAsync(JObject userInfo, string provider)
@@ -54,15 +60,23 @@ namespace CryptoTrading.IdentityServer.Processors
                 var newUser = new TUser 
                     {   
                         Email = userEmail, 
-                        UserName = userEmail.Substring(0, userEmail.LastIndexOf("@")), 
+                        UserName = userEmail, 
                         FirstName = userInfo.Value<string>("given_name"), 
                         LastName = userInfo.Value<string>("family_name"),
                         ProfilePicture = userInfo.Value<string>("picture")
                     };
 
                 var result = await _userManager.CreateAsync(newUser);
+
                 if (result.Succeeded)
                 {
+                    var wallet = await _walletService.CreateWalletAsync(new WalletDomainModel
+                    {
+                        UserId = newUser.Id,
+                        Balance = 10000,
+                        Profit = 0,
+                    });
+
                     //await _userManager.AddClaimAsync(newUser, new Claim("role", "Admin"));
                     await _userManager.AddLoginAsync(newUser, new UserLoginInfo(provider, userExternalId, provider));
                     var userClaims = await _userManager.GetClaimsAsync(newUser);

@@ -7,6 +7,7 @@ using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
 using CryptoTrading.Repositories;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace CryptoTrading.Domain.Services
 {
@@ -59,7 +60,7 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public async Task<GenericDomainModel<CoinGecko.Entities.Response.Coins.CoinMarkets>> GetWatchListCoinsByUserIdAsync(Guid userId)
+        public async Task<GenericDomainModel<CoinGecko.Entities.Response.Coins.CoinMarkets>> GetWatchListByUserIdAsync(Guid userId)
         {
             var checkUserId = await _userRepository.GetByIdAsync(userId);
             if (checkUserId == null)
@@ -73,9 +74,12 @@ namespace CryptoTrading.Domain.Services
 
             var coins =await _coinsRepository.GetCoinsFromWathchlistByUserId(userId);
 
-            if (checkUserId == null)
+            if (coins == null || coins.Count() == 0)
             {
-                return null;
+                return new GenericDomainModel<CoinGecko.Entities.Response.Coins.CoinMarkets>
+                {
+                    IsSuccessful = true
+                };
             }
 
             var coinsIds = new List<string>();
@@ -85,7 +89,7 @@ namespace CryptoTrading.Domain.Services
                 coinsIds.Add((coin.Id));
             }
 
-            var coinsFormApi = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", coinsIds.ToArray() , "market_cap_desc", null,null , false, "", "");
+            var coinsFormApi = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", coinsIds.ToArray() , "market_cap_desc", null,null , true, "1h,24h,7d", "");
 
             if (coinsFormApi == null)
             {
@@ -103,48 +107,7 @@ namespace CryptoTrading.Domain.Services
             };
         }
 
-        public async Task<GenericDomainModel<CoinDomainModel>> addCoinToWatchListAsync(Guid userId, string coinId)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-            {
-                return new GenericDomainModel<CoinDomainModel>
-                {
-                    IsSuccessful = false,
-                    ErrorMessage = Messages.USERS_NOT_FOUND
-                };
-            }
-
-            var checkCoin = await _coinsRepository.GetByIdAsync(coinId);
-
-            if (checkCoin == null)
-            {
-                var coinsFormApi = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", new string[] { coinId }, "market_cap_desc", null, null, false, "", "");
-
-                if (coinsFormApi == null)
-                {
-                    return new GenericDomainModel<CoinDomainModel>
-                    {
-                        IsSuccessful = false,
-                        ErrorMessage = Messages.COINGECKO_COIN_DATA_ERROR
-                    };
-                }
-
-                checkCoin = _mapper.Map<Coin>(coinsFormApi[0]);
-
-            }
-
-            
-
-            user.Coins.Add(checkCoin);
-
-           await _coinsRepository.SaveAsync();
-
-            return new GenericDomainModel<CoinDomainModel>
-            {
-                IsSuccessful = true,
-            };
-        }
+        
 
         public async Task<GenericDomainModel<CoinDomainModel>> DeleteCoinAsync(string coinId)
         {
@@ -193,6 +156,90 @@ namespace CryptoTrading.Domain.Services
                 IsSuccessful = true,
                 Data = _mapper.Map<CoinDomainModel>(coin)
             };
+        }
+
+        public async Task<GenericDomainModel<CoinDomainModel>> AddCoinToWatchListAsync(Guid userId, string coinId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GenericDomainModel<CoinDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USERS_NOT_FOUND
+                };
+            }
+
+            var checkCoin = await _coinsRepository.GetByIdAsync(coinId);
+
+            if (checkCoin == null)
+            {
+                var coinsFormApi = await _coinGeckoClient.CoinsClient.GetCoinMarkets("eur", new string[] { coinId }, "market_cap_desc", null, null, false, "", "");
+
+                if (coinsFormApi == null)
+                {
+                    return new GenericDomainModel<CoinDomainModel>
+                    {
+                        IsSuccessful = false,
+                        ErrorMessage = Messages.COINGECKO_COIN_DATA_ERROR
+                    };
+                }
+
+                checkCoin = _mapper.Map<Coin>(coinsFormApi[0]);
+
+            }
+
+            user.Coins.Add(checkCoin);
+
+            await _coinsRepository.SaveAsync();
+
+            return new GenericDomainModel<CoinDomainModel>
+            {
+                IsSuccessful = true,
+            };
+        }
+
+        public async Task<GenericDomainModel<CoinDomainModel>> RemoveCoinFromWatchListAsync(Guid userId, string coinId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GenericDomainModel<CoinDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.USERS_NOT_FOUND
+                };
+            }
+
+            var coin = await _coinsRepository.GetByIdAsync(coinId);
+            if (coin == null)
+            {
+                return new GenericDomainModel<CoinDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.COIN_ID_NULL
+                };
+            }
+
+            if(!user.Coins.Any(x =>x.Id == coin.Id))
+            {
+                return new GenericDomainModel<CoinDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.COIN_NOT_IN_USER_WATCHLIST
+                };
+            }
+
+            user.Coins.Remove(coin);
+
+            await _coinsRepository.SaveAsync();
+
+            return new GenericDomainModel<CoinDomainModel>
+            {
+                IsSuccessful = true,
+            };
+
+
         }
     }
 }

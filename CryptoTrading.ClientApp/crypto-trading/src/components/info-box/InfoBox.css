@@ -1,0 +1,7 @@
+.info-border{
+    border-radius: 20px;
+}
+
+.info-shadow{
+    box-shadow: rgba(35, 40, 49, 0.2) 0px 7px 29px 0px;
+}

@@ -12,8 +12,10 @@ namespace CryptoTrading.Domain.Interfaces
         Task<GenericDomainModel<CoinDomainModel>> GetByIdAsync(string coinId);
         Task<GenericDomainModel<CoinDomainModel>> DeleteCoinAsync(string coinId);
         Task<GenericDomainModel<CoinDomainModel>> CreateCoinAsync(string coinId);
-        Task<GenericDomainModel<CoinGecko.Entities.Response.Coins.CoinMarkets>> GetWatchListCoinsByUserIdAsync(Guid userId);
-        Task<GenericDomainModel<CoinDomainModel>> addCoinToWatchListAsync(Guid userId,string coinId);
-        
+        Task<GenericDomainModel<CoinGecko.Entities.Response.Coins.CoinMarkets>> GetWatchListByUserIdAsync(Guid userId);
+        Task<GenericDomainModel<CoinDomainModel>> AddCoinToWatchListAsync(Guid userId,string coinId);
+        Task<GenericDomainModel<CoinDomainModel>> RemoveCoinFromWatchListAsync(Guid userId, string coinId);
+
+
     }
 }

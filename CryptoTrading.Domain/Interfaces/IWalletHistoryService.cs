@@ -11,5 +11,8 @@ namespace CryptoTrading.Domain.Interfaces
     {
         Task<GenericDomainModel<WalletHistoryModel>> GetAllAsync();
         Task<GenericDomainModel<WalletHistoryModel>> GetByWalletIdAsync(Guid walletId);
+        Task<GenericDomainModel<WalletHistoryModel>> GetByWalletIdInRangeAsync(Guid walletId, DateTime startDate, DateTime endDate);
+        Task<GenericDomainModel<WalletHistoryModel>> GetByWalletIdForCoinIdAsync(Guid walletId, string coinId);
+
     }
 }

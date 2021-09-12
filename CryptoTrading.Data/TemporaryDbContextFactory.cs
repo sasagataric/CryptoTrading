@@ -16,7 +16,7 @@ namespace CryptoTrading.Data
         public CryptoTradingContext CreateDbContext()
         {
             var builder = new DbContextOptionsBuilder<CryptoTradingContext>();
-            builder.UseSqlServer("Data Source=.;Initial Catalog=CryptoTradingIdentity;Integrated Security=True;",
+            builder.UseSqlServer("ConString",
                 optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(CryptoTradingContext).GetTypeInfo().Assembly.GetName().Name));
             return new CryptoTradingContext(builder.Options);
         }
@@ -27,7 +27,7 @@ namespace CryptoTrading.Data
         public PersistedGrantDbContext CreateDbContext()
         {
             var builder = new DbContextOptionsBuilder<PersistedGrantDbContext>();
-            builder.UseSqlServer("Data Source=.;Initial Catalog=CryptoTradingIdentity;Integrated Security=True;",
+            builder.UseSqlServer("ConString",
                optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(CryptoTradingContext).GetTypeInfo().Assembly.GetName().Name));
             return new PersistedGrantDbContext(builder.Options, new OperationalStoreOptions());
         }
@@ -37,7 +37,7 @@ namespace CryptoTrading.Data
         public ConfigurationDbContext CreateDbContext()
         {
             var builder = new DbContextOptionsBuilder<ConfigurationDbContext>();
-            builder.UseSqlServer("Data Source=.;Initial Catalog=CryptoTradingIdentity;Integrated Security=True;",
+            builder.UseSqlServer("ConString",
                  optionsBuilder => optionsBuilder.MigrationsAssembly(typeof(CryptoTradingContext).GetTypeInfo().Assembly.GetName().Name));
 
             return new ConfigurationDbContext(builder.Options, new ConfigurationStoreOptions());

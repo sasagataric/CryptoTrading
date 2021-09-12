@@ -14,7 +14,7 @@ namespace CryptoTrading.Data.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Coin> Coins { get; set; }
-        public DbSet<PurchasedCoin> PurchasedCoin { get; set; }
+        public DbSet<Holding> Holdings { get; set; }
         public DbSet<WalletHistory> WalletHistorys { get; set; }
         
         public CryptoTradingContext(DbContextOptions<CryptoTradingContext> options) : base(options)
@@ -28,7 +28,7 @@ namespace CryptoTrading.Data.Context
             modelBuilder.Entity<Wallet>()
                 .HasMany(c => c.Coins)
                 .WithMany(w => w.Wallets)
-                .UsingEntity<PurchasedCoin>(
+                .UsingEntity<Holding>(
                     x => x.HasOne(wc => wc.Coin)
                           .WithMany(c => c.PurchasedCoin)
                           .HasForeignKey(wc => wc.CoinId),

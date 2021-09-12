@@ -14,7 +14,7 @@ namespace CryptoTrading.Data.Entities
         public string Symbol { get; set; }
         public ICollection<Wallet> Wallets { get; set; }
         public ICollection<User> Users { get; set; }
-        public ICollection<PurchasedCoin> PurchasedCoin { get; set; }
+        public ICollection<Holding> PurchasedCoin { get; set; }
         public ICollection<WalletHistory> WalletHistorys { get; set; }
 
     }

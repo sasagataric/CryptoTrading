@@ -13,6 +13,6 @@ namespace CryptoTrading.Domain.Models
         public Guid UserId { get; set; }
         public decimal Balance { get; set; }
         public decimal Profit { get; set; }
-        public List<PurchasedCoinDomainModel> PurchasedCoins { get; set; }
+        public List<HoldingDomainModel> PurchasedCoins { get; set; }
     }
 }

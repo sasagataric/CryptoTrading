@@ -61,7 +61,7 @@ namespace CryptoTrading.IdentityServer.Configuration
                     ClientName="Crypto Trading Web App",
                     ClientSecrets =
                     {
-                        new Secret("fb9060c08c20b4fd92c29731dfb8eeac6a34fcf6e72b6f48aad42ab7353e117b".Sha256())
+                        new Secret("Some secret".Sha256())
                     },
                     AllowedScopes = {
                         StandardScopes.Email,

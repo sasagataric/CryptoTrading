@@ -13,5 +13,7 @@ namespace CryptoTrading.Domain.Interfaces
         Task<GenericDomainModel<WalletDomainModel>> GetWalletByUserIdAsync(Guid userId);
         Task<GenericDomainModel<WalletDomainModel>> GetByIdAsync(Guid walletId);
         Task<GenericDomainModel<WalletDomainModel>> UpdateWalletBalanceAsync(Guid userId, decimal balanceChange);
+        Task<GenericDomainModel<WalletDomainModel>> AddBalance(Guid walletId, decimal amount);
+
     }
 }

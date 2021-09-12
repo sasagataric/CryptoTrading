@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface IWalletsRepositor : IRepository<Wallet>
+    public interface IWalletsRepository : IRepository<Wallet>
     {
         Task<Wallet> GetByWalletIdAsync(Guid walletId);
         Task<Wallet> GetByUserIdAsync(Guid userId);
     }
-    public class WalletsRepository : IWalletsRepositor
+    public class WalletsRepository : IWalletsRepository
     {
         private CryptoTradingContext _cryptoTradingContext;
         public WalletsRepository(CryptoTradingContext cryptoTradingContext)
