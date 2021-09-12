@@ -1,38 +1,115 @@
-.App {
-  text-align: center;
+*{
+  font-family: 'Roboto', sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.font-08{
+  font-size: 0.8rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.font-09{
+  font-size: 0.9rem;
+}
+
+.font-1{
+  font-size: 1rem;
+}
+
+.bg-silver{
+  background-color: #d2d3e0 !important;
+}
+
+.bg-silver-dark{
+  background-color: #9a9ba5 !important;
+}
+
+.font-color-bluish{
+  color: #58667e !important;
+}
+
+.spinner-color{
+  color: #718bb8 !important;
+}
+.font-white{
+  color: #ffffff !important;
+}
+
+.bg-bluish{
+  background-color: #61728d !important;
+}
+
+.min-h-17{
+    min-height: 16vh;
+}
+
+.clickable{
+  cursor:pointer;
+}
+
+.fixed-tb-col:nth-child(2)
+{
+  position:sticky;
+  left:0px;
+  background-color: #F8F9FA;
+}
+
+
+.from-red{
+  animation: fromRedToBlack 3s none;
+}
+.from-green{
+  animation: fromGreenToBlack 3s none;
+}
+
+@keyframes fromRedToBlack {
+  0%  {color: red;}
+  60% {color: red;}
+  100%{color: black;}
+}
+
+@keyframes fromGreenToBlack {
+  0%  {color: rgb(12, 207, 12);}
+  60% {color: rgb(12, 207, 12);}
+  100%{color: black;}
+}
+
+
+@media only screen and (max-width: 576px) {
+  .font-sm-08{
+    font-size: 0.8rem !important;
+  }
+  
+  .font-sm-09{
+    font-size: 0.9rem !important;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.min-width-200px{
+  min-width: 200px;
 }
 
-.App-link {
-  color: #61dafb;
+.bg-radial-gradiant-sws{
+  background: rgb(255,255,255);
+  background: radial-gradient(circle, rgba(255,255,255,1) 69%, rgba(248,249,250,1) 89%);
+}
+.bg-radial-gradiant-wsw{
+  background: rgb(248,249,250);
+  background: radial-gradient(circle, rgba(248,249,250,1) 60%, rgba(255,255,255,1) 80%);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.no-hover:hover {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.google-img-radius>div{
+  border-radius: 50% !important;
+}
+
+.shadow-lite{
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px !important;
+}
+
+.spinner-star {
+  width: 19px !important;
+  height: 19px !important;
 }

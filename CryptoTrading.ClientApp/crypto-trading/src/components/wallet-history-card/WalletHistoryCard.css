@@ -1,0 +1,27 @@
+.max-height{  
+    max-height: 40vh !important;
+    overflow-y: auto;
+}
+
+.max-height::-webkit-scrollbar {
+    width: 8px;
+}
+ 
+.max-height::-webkit-scrollbar-track {
+    background-color: #ebebeb;
+    border-radius: 100px;
+}
+ 
+.max-height::-webkit-scrollbar-thumb {
+    background-color: #436aa577;
+    border-radius: 100px;
+}
+
+.spacing {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+}
+
+.height{
+    height: 7vh;
+}

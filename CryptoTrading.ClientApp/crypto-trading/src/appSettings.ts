@@ -1,3 +1,11 @@
-export const serviceConfig = {
-    baseURL: "https://localhost:5001"
+export const APIUrlConfig = {
+    baseURL: ""
+};
+
+export const IdentityServerURLConfig = {
+    baseURL: ""
+};
+
+export const CoinGeckoURLConfig = {
+    baseURL: "https://api.coingecko.com/api/v3"
 };

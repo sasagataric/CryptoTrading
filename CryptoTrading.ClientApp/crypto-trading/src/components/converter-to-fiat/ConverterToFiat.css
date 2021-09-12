@@ -1,0 +1,46 @@
+.font-08{
+    font-size: 0.8rem;
+}
+
+.font-09{
+    font-size: 0.9rem;
+}
+
+.font-1{
+    font-size: 1rem;
+}
+
+.bg-silver{
+    background-color: #DADBE2 !important;
+}
+
+.bg-silver-dark{
+    background-color: #9a9ba5 !important;
+}
+
+.font-color-bluish{
+    color: #58667e !important;
+}
+
+.bg-bluish{
+    background-color: #61728d !important;
+}
+
+.border-radius{
+    border-radius: 25px;
+}
+.border-radius-bottom{
+   border-radius: 0px 0px 25px 25px;
+
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
