@@ -18,7 +18,7 @@ namespace CryptoTrading.Domain.Mapper
 
             CreateMap<CoinDomainModel, Coin>().ReverseMap();
 
-            CreateMap<PurchasedCoin, PurchasedCoinDomainModel>().ReverseMap();
+            CreateMap<Holding, HoldingDomainModel>().ReverseMap();
 
             CreateMap<WalletHistory, WalletHistoryModel>()
                 .ForMember(dest => dest.CoinPriceAtTheTime, opt => opt.MapFrom(src => src.CoinPrice))

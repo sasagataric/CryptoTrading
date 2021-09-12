@@ -11,26 +11,40 @@ namespace CryptoTrading.Domain.Services
 {
     public class WalletService : IWalletService
     {
-        private readonly IWalletsRepositor _walletRepository;
+        private readonly IWalletsRepository _walletRepository;
         private readonly IUsersRepository _usersRepository;
-        private readonly IPurchasedCoinsRepository _purchasedCoinsRepository;
-        private readonly ICoinsRepository _coinsRepository;
-        private readonly CoinGecko.Interfaces.ICoinGeckoClient _coinGeckoClient;
         private readonly IMapper _mapper;
 
-        public WalletService(IWalletsRepositor walletRepository, 
-                            IUsersRepository usersRepository, 
-                            IPurchasedCoinsRepository purchasedCoinsRepository,
-                            ICoinsRepository coinsRepository,
-                            CoinGecko.Interfaces.ICoinGeckoClient coinGeckoClient, 
+        public WalletService(IWalletsRepository walletRepository, 
+                            IUsersRepository usersRepository,               
                             IMapper mapper)
         {
             _walletRepository = walletRepository;
             _usersRepository = usersRepository;
-            _purchasedCoinsRepository = purchasedCoinsRepository;
-            _coinsRepository = coinsRepository;
-            _coinGeckoClient = coinGeckoClient;
             _mapper = mapper;
+        }
+
+        public async Task<GenericDomainModel<WalletDomainModel>> AddBalance(Guid walletId, decimal amount)
+        {
+            var wallet = await _walletRepository.GetByIdAsync(walletId);
+            if (wallet == null)
+            {
+                return new GenericDomainModel<WalletDomainModel>
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = Messages.WALLET_ID_NULL
+                };
+            }
+
+            wallet.Balance += amount;
+
+            await _walletRepository.SaveAsync();
+
+            return new GenericDomainModel<WalletDomainModel>
+            {
+                IsSuccessful = true,
+                Data = _mapper.Map<WalletDomainModel>(wallet)
+            };
         }
 
         public async Task<GenericDomainModel<WalletDomainModel>> CreateWalletAsync(WalletDomainModel newWallet)

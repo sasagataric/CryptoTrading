@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Data.Entities
 {
-    public class PurchasedCoin
+    public class Holding
     {
         public string CoinId { get; set; }
         public Coin Coin { get; set; }
@@ -15,5 +15,10 @@ namespace CryptoTrading.Data.Entities
         public Wallet Wallet { get; set; }
         [Column(TypeName = "decimal(18,10)")]
         public decimal Amount { get; set; }
+        [Column(TypeName = "decimal(18,10)")]
+        public decimal AverageBuyingPrice { get; set; }
+        [Column(TypeName = "decimal(18,10)")]
+        public decimal AverageSellingPrice { get; set; }
+        public DateTime DateOfFirstPurchase { get; set; }
     }
 }

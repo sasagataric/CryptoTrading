@@ -9,49 +9,49 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface IPurchasedCoinsRepository
+    public interface IHoldingsRepository
     {
-        Task<IEnumerable<PurchasedCoin>> GetPurchasedCoinsByUserIdAsync(Guid userId);
-        Task<PurchasedCoin> GetPurchasedCoinAsync(Guid walletId, string coinId);
-        PurchasedCoin DeletePurchasedCoin(PurchasedCoin purchasedCoin);
-        Task<PurchasedCoin> InsertAsync(PurchasedCoin purchasedCoin);
+        Task<IEnumerable<Holding>> GetTransactionsByUserIdAsync(Guid userId);
+        Task<Holding> GetTransactionAsync(Guid walletId, string coinId);
+        Holding DeletePurchasedCoin(Holding purchasedCoin);
+        Task<Holding> InsertAsync(Holding purchasedCoin);
         Task SaveAsync();
     }
-    public class PurchasedCoinsRepository : IPurchasedCoinsRepository
+    public class HoldingsRepository : IHoldingsRepository
     {
         private readonly CryptoTradingContext _cryptoTradingContext;
-        public PurchasedCoinsRepository(CryptoTradingContext cryptoTradingContext)
+        public HoldingsRepository(CryptoTradingContext cryptoTradingContext)
         {
             _cryptoTradingContext = cryptoTradingContext;
         }
 
-        public PurchasedCoin DeletePurchasedCoin(PurchasedCoin purchasedCoin)
+        public Holding DeletePurchasedCoin(Holding purchasedCoin)
         {
-            var deleted = _cryptoTradingContext.PurchasedCoin.Remove(purchasedCoin);
+            var deleted = _cryptoTradingContext.Holdings.Remove(purchasedCoin);
             return deleted.Entity;
         }
 
-        public async Task<IEnumerable<PurchasedCoin>> GetPurchasedCoinsByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<Holding>> GetTransactionsByUserIdAsync(Guid userId)
         {
-            var purchasedCoin = await _cryptoTradingContext.PurchasedCoin.Where(x => x.Wallet.UserId == userId )
+            var purchasedCoin = await _cryptoTradingContext.Holdings.Where(x => x.Wallet.UserId == userId )
                                                                                     .Include(x =>x.Wallet)
                                                                                     .Include(x=>x.Coin)
                                                                                     .ToArrayAsync();
             return purchasedCoin;
         }
 
-        public async Task<PurchasedCoin> GetPurchasedCoinAsync(Guid walletId, string coinId)
+        public async Task<Holding> GetTransactionAsync(Guid walletId, string coinId)
         {
-            var purchasedCoin = await _cryptoTradingContext.PurchasedCoin.Where(x => x.CoinId == coinId && x.WalletId == walletId)
+            var purchasedCoin = await _cryptoTradingContext.Holdings.Where(x => x.CoinId == coinId && x.WalletId == walletId)
                                                                         .Include(x => x.Wallet)
                                                                         .Include(x => x.Coin)
                                                                         .FirstOrDefaultAsync();
             return purchasedCoin;
         }
 
-        public async Task<PurchasedCoin> InsertAsync(PurchasedCoin purchasedCoin)
+        public async Task<Holding> InsertAsync(Holding purchasedCoin)
         {
-            var purchase = await _cryptoTradingContext.PurchasedCoin.AddAsync(purchasedCoin);
+            var purchase = await _cryptoTradingContext.Holdings.AddAsync(purchasedCoin);
             return purchase.Entity;
         }
 

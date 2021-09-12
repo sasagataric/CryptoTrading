@@ -4,14 +4,16 @@ using CryptoTrading.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CryptoTrading.Data.Migrations
 {
     [DbContext(typeof(CryptoTradingContext))]
-    partial class CryptoTradingContextModelSnapshot : ModelSnapshot
+    [Migration("20210903225655_AddedAvgBuyingAndSellingPrices")]
+    partial class AddedAvgBuyingAndSellingPrices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,7 +83,7 @@ namespace CryptoTrading.Data.Migrations
                     b.ToTable("Coins");
                 });
 
-            modelBuilder.Entity("CryptoTrading.Data.Entities.Holding", b =>
+            modelBuilder.Entity("CryptoTrading.Data.Entities.PurchasedCoin", b =>
                 {
                     b.Property<Guid>("WalletId")
                         .HasColumnType("uniqueidentifier");
@@ -93,19 +95,16 @@ namespace CryptoTrading.Data.Migrations
                         .HasColumnType("decimal(18,10)");
 
                     b.Property<decimal>("AverageBuyingPrice")
-                        .HasColumnType("decimal(18,10)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("AverageSellingPrice")
-                        .HasColumnType("decimal(18,10)");
-
-                    b.Property<DateTime>("DateOfFirstPurchase")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("WalletId", "CoinId");
 
                     b.HasIndex("CoinId");
 
-                    b.ToTable("Holdings");
+                    b.ToTable("PurchasedCoin");
                 });
 
             modelBuilder.Entity("CryptoTrading.Data.Entities.User", b =>
@@ -222,7 +221,7 @@ namespace CryptoTrading.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("CoinPrice")
-                        .HasColumnType("decimal(18,10)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
@@ -355,7 +354,7 @@ namespace CryptoTrading.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CryptoTrading.Data.Entities.Holding", b =>
+            modelBuilder.Entity("CryptoTrading.Data.Entities.PurchasedCoin", b =>
                 {
                     b.HasOne("CryptoTrading.Data.Entities.Coin", "Coin")
                         .WithMany("PurchasedCoin")
