@@ -68,7 +68,7 @@ const TreansactionBuyModel : React.FC<IProps> = (props) => {
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <p className="fw-light mb-2">Your balace : €{utils.getToLocalString(wallet.balance)}</p>
+            <p className="fw-light mb-2">Your balance : €{utils.getToLocalString(wallet.balance)}</p>
             <InputGroup className="mb-3">
                 <InputGroup.Text>Amount</InputGroup.Text>
                 <FormControl 
