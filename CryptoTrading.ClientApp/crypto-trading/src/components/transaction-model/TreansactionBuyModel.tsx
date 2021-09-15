@@ -6,6 +6,7 @@ import { changeWalletBalance } from '../../redux/actions/walletActions';
 import { WalletState } from '../../redux/types';
 import {ICoinsMarkets} from '../../models/CoinGeckoModels'
 import {holdingService} from '../../services/holdingService';
+import { utils } from '../../utils/Utils'
 
 
 
@@ -67,6 +68,7 @@ const TreansactionBuyModel : React.FC<IProps> = (props) => {
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+            <p className="fw-light mb-2">Your balace : €{utils.getToLocalString(wallet.balance)}</p>
             <InputGroup className="mb-3">
                 <InputGroup.Text>Amount</InputGroup.Text>
                 <FormControl 
