@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using CryptoTrading.Data.Entities;
 using CryptoTrading.Domain.Common;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
-using CryptoTrading.Repositories;
+using CryptoTrading.Repositories.Interfaces;
 
 namespace CryptoTrading.Domain.Services
 {

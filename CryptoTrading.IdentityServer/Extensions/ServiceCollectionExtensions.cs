@@ -11,6 +11,7 @@ using CryptoTrading.IdentityServer.Providers;
 using CryptoTrading.IdentityServer.Repository;
 using CryptoTrading.IdentityServer.Repository.Interfaces;
 using CryptoTrading.Repositories;
+using CryptoTrading.Repositories.Interfaces;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -74,7 +75,6 @@ namespace CryptoTrading.IdentityServer.Extensions
             services.AddScoped<IProviderRepository, ProviderRepository>();
             services.AddScoped<IWalletsRepository, WalletsRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
-
 
             return services;
         }

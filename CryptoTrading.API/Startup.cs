@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
 using CryptoTrading.Data.Entities;
 using Microsoft.AspNetCore.Identity;
+using CryptoTrading.Repositories.Interfaces;
 
 namespace CryptoTrading.API
 {

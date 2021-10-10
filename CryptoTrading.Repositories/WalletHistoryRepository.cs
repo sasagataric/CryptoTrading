@@ -10,15 +10,6 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface IWalletHistoryRepository : IRepository<WalletHistory>
-    {
-        Task<IEnumerable<WalletHistory>> GetByUserIdAsync(Guid userId);
-        Task<IEnumerable<WalletHistory>> GetByWalletIdInRangeAsync(Guid walletId, DateTime start, DateTime end);
-        Task<IEnumerable<WalletHistory>> GetByWalletIdAsync(Guid walletId);
-        Task<IEnumerable<WalletHistory>> GetByWalletIdForCoinIdAsync(Guid walletId, string coinId);
-        Task<IEnumerable<WalletHistory>> GetBoughtForWalletIdAndCoinIdAfterDateAsync(Guid walletId, string coinId,DateTime date);
-
-    }
     public class WalletHistoryRepository : IWalletHistoryRepository
     {
         private readonly CryptoTradingContext _cryptoTradingContext;
