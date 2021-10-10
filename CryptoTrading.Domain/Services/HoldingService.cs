@@ -3,7 +3,7 @@ using CryptoTrading.Data.Entities;
 using CryptoTrading.Domain.Common;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
-using CryptoTrading.Repositories;
+using CryptoTrading.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

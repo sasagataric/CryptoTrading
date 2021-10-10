@@ -10,10 +10,6 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface ICoinsRepository: IRepository<Coin> 
-    {
-        Task<IEnumerable<Coin>> GetCoinsFromWathchlistByUserId(Guid userId);
-    }
     public class CoinsRepository : ICoinsRepository
     {
         private CryptoTradingContext _cryptoTradingContext;

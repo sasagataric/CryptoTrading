@@ -9,12 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
-{
-    public interface IWalletsRepository : IRepository<Wallet>
-    {
-        Task<Wallet> GetByWalletIdAsync(Guid walletId);
-        Task<Wallet> GetByUserIdAsync(Guid userId);
-    }
+{   
     public class WalletsRepository : IWalletsRepository
     {
         private CryptoTradingContext _cryptoTradingContext;

@@ -1,5 +1,6 @@
 ﻿using CryptoTrading.Data.Context;
 using CryptoTrading.Data.Entities;
+using CryptoTrading.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,14 +10,6 @@ using System.Threading.Tasks;
 
 namespace CryptoTrading.Repositories
 {
-    public interface IHoldingsRepository
-    {
-        Task<IEnumerable<Holding>> GetTransactionsByUserIdAsync(Guid userId);
-        Task<Holding> GetTransactionAsync(Guid walletId, string coinId);
-        Holding DeletePurchasedCoin(Holding purchasedCoin);
-        Task<Holding> InsertAsync(Holding purchasedCoin);
-        Task SaveAsync();
-    }
     public class HoldingsRepository : IHoldingsRepository
     {
         private readonly CryptoTradingContext _cryptoTradingContext;

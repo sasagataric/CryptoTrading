@@ -5,9 +5,9 @@ using CryptoTrading.Data.Entities;
 using CryptoTrading.Domain.Common;
 using CryptoTrading.Domain.Interfaces;
 using CryptoTrading.Domain.Models;
-using CryptoTrading.Repositories;
 using System.Threading.Tasks;
 using System.Linq;
+using CryptoTrading.Repositories.Interfaces;
 
 namespace CryptoTrading.Domain.Services
 {
