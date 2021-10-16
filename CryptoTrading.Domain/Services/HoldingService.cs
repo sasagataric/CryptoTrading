@@ -76,11 +76,11 @@ namespace CryptoTrading.Domain.Services
 
             var curranDateTime = DateTime.Now;
 
-            var checkPurchasedCoin = await _holdingsRepository.GetTransactionAsync(walletId, coinId);
-            if (checkPurchasedCoin != null)
+            var checkHolding = await _holdingsRepository.GetHoldingAsync(walletId, coinId);
+            if (checkHolding != null)
             {
-                checkPurchasedCoin.Amount += coinAmount;
-                checkPurchasedCoin.AverageBuyingPrice =await CalculateNewAverageBuyingPrice(walletId, coinId, coinAmount, price.Value, checkPurchasedCoin.DateOfFirstPurchase);
+                checkHolding.Amount += coinAmount;
+                checkHolding.AverageBuyingPrice =await CalculateNewAverageBuyingPrice(walletId, coinId, coinAmount, price.Value, checkHolding.DateOfFirstPurchase);
             }
             else
             {
@@ -96,8 +96,8 @@ namespace CryptoTrading.Domain.Services
                     AverageSellingPrice =0
                 };
 
-                checkPurchasedCoin = await _holdingsRepository.InsertAsync(newPurchase);
-                if (checkPurchasedCoin == null)
+                checkHolding = await _holdingsRepository.InsertAsync(newPurchase);
+                if (checkHolding == null)
                 {
                     return new GenericDomainModel<HoldingDomainModel>
                     {
@@ -124,7 +124,7 @@ namespace CryptoTrading.Domain.Services
             return new GenericDomainModel<HoldingDomainModel>
             {
                 IsSuccessful = true,
-                Data = _mapper.Map<HoldingDomainModel>(checkPurchasedCoin)
+                Data = _mapper.Map<HoldingDomainModel>(checkHolding)
             };
         }
 
@@ -156,8 +156,8 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            var purchasedCoin= await _holdingsRepository.GetTransactionAsync(walletId, coinId);
-            if (purchasedCoin == null)
+            var holding= await _holdingsRepository.GetHoldingAsync(walletId, coinId);
+            if (holding == null)
             {
                 return new GenericDomainModel<HoldingDomainModel>
                 {
@@ -176,7 +176,7 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            if (purchasedCoin.Amount < coinAmount)
+            if (holding.Amount < coinAmount)
             {
                 return new GenericDomainModel<HoldingDomainModel>
                 {
@@ -185,7 +185,7 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            purchasedCoin.Amount -= coinAmount;
+            holding.Amount -= coinAmount;
 
             if (coinCurrantData[0].CurrentPrice != null)
                 wallet.Balance += coinAmount * coinCurrantData[0].CurrentPrice.Value;
@@ -203,20 +203,20 @@ namespace CryptoTrading.Domain.Services
             await _walletHistoryRepository.InsertAsync(histoy);
 
 
-            if (purchasedCoin.Amount == 0)
+            if (holding.Amount == 0)
             {
-                purchasedCoin = _holdingsRepository.DeletePurchasedCoin(purchasedCoin);
+                holding = _holdingsRepository.DeleteHoldingCoin(holding);
             }
             await _holdingsRepository.SaveAsync();
 
             return new GenericDomainModel<HoldingDomainModel>
             {
                 IsSuccessful = true,
-                Data = _mapper.Map<HoldingDomainModel>(purchasedCoin)
+                Data = _mapper.Map<HoldingDomainModel>(holding)
             };
         }
 
-        public async Task<GenericDomainModel<HoldingDomainModel>> GetPurchasesByUserId(Guid userId)
+        public async Task<GenericDomainModel<HoldingDomainModel>> GetHoldingsByUserId(Guid userId)
         {
             var user =await _usersRepository.GetByIdAsync(userId);
             if (user == null)
@@ -228,8 +228,8 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            var purchases =await _holdingsRepository.GetTransactionsByUserIdAsync(userId);
-            if (purchases == null)
+            var holdings =await _holdingsRepository.GetHoldingsByUserIdAsync(userId);
+            if (holdings == null)
             {
                 return new GenericDomainModel<HoldingDomainModel>
                 {
@@ -240,12 +240,12 @@ namespace CryptoTrading.Domain.Services
             return new GenericDomainModel<HoldingDomainModel>
             {
                 IsSuccessful = true,
-                DataList = _mapper.Map<IEnumerable<Holding>, List<HoldingDomainModel>>(purchases)
+                DataList = _mapper.Map<IEnumerable<Holding>, List<HoldingDomainModel>>(holdings)
             };
 
         }
 
-        public async Task<GenericDomainModel<HoldingDomainModel>> GetPurchase(Guid walletId, string coinId)
+        public async Task<GenericDomainModel<HoldingDomainModel>> GetHolding(Guid walletId, string coinId)
         {
             var wallet = await _walletRepository.GetByIdAsync(walletId);
             if (wallet == null)
@@ -257,8 +257,8 @@ namespace CryptoTrading.Domain.Services
                 };
             }
 
-            var purchase =await _holdingsRepository.GetTransactionAsync(walletId, coinId);
-            if (purchase == null)
+            var holdings =await _holdingsRepository.GetHoldingAsync(walletId, coinId);
+            if (holdings == null)
             {
                 return new GenericDomainModel<HoldingDomainModel>
                 {
@@ -270,7 +270,7 @@ namespace CryptoTrading.Domain.Services
             return new GenericDomainModel<HoldingDomainModel>
             {
                 IsSuccessful = true,
-                Data = _mapper.Map<HoldingDomainModel>(purchase)
+                Data = _mapper.Map<HoldingDomainModel>(holdings)
             };
 
         }

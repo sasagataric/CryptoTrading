@@ -7,9 +7,9 @@ namespace CryptoTrading.Repositories.Interfaces
 {
     public interface IHoldingsRepository
     {
-        Task<IEnumerable<Holding>> GetTransactionsByUserIdAsync(Guid userId);
-        Task<Holding> GetTransactionAsync(Guid walletId, string coinId);
-        Holding DeletePurchasedCoin(Holding purchasedCoin);
+        Task<IEnumerable<Holding>> GetHoldingsByUserIdAsync(Guid userId);
+        Task<Holding> GetHoldingAsync(Guid walletId, string coinId);
+        Holding DeleteHoldingCoin(Holding purchasedCoin);
         Task<Holding> InsertAsync(Holding purchasedCoin);
         Task SaveAsync();
     }
