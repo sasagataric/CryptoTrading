@@ -24,9 +24,9 @@ namespace CryptoTrading.API.Controllers
         }
 
         [HttpGet("{walletId:Guid}&{coinId}")]
-        public async Task<ActionResult> GetPurchase(Guid walletId, string coinId)
+        public async Task<ActionResult> GetHolding(Guid walletId, string coinId)
         {
-            var purchase = await _holdingService.GetPurchase(walletId, coinId);
+            var purchase = await _holdingService.GetHolding(walletId, coinId);
 
             if (!purchase.IsSuccessful)
             {
@@ -44,9 +44,9 @@ namespace CryptoTrading.API.Controllers
 
         [HttpGet]
         [Route("{userId:Guid}")]
-        public async Task<ActionResult> GetPurchasesByUserId(Guid userId)
+        public async Task<ActionResult> GetHoldingsByUserId(Guid userId)
         {
-            var purchases = await _holdingService.GetPurchasesByUserId(userId);
+            var purchases = await _holdingService.GetHoldingsByUserId(userId);
 
             if (!purchases.IsSuccessful)
             {
@@ -79,7 +79,7 @@ namespace CryptoTrading.API.Controllers
             {
                 ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    ErrorMessage = (e.InnerException != null) ? e.InnerException.Message : e.Message,
                     StatusCode = HttpStatusCode.BadRequest
                 };
 
@@ -96,11 +96,11 @@ namespace CryptoTrading.API.Controllers
 
                 return BadRequest(errorResponse);
             }
-            return CreatedAtAction(nameof(GetPurchase), new { walletId = purchase.Data.WalletId, coinId = purchase.Data.Coin.Id }, purchase.Data);
+            return CreatedAtAction(nameof(GetHolding), new { walletId = purchase.Data.WalletId, coinId = purchase.Data.Coin.Id }, purchase.Data);
         }
 
         [HttpPost("sell")]
-        public async Task<ActionResult> SellCoin(HoldingModel purchaseModel)
+        public async Task<ActionResult> SellCoin(HoldingModel sellModel)
         {
             if (!ModelState.IsValid)
             {
@@ -109,13 +109,13 @@ namespace CryptoTrading.API.Controllers
             GenericDomainModel<HoldingDomainModel> sellCoin;
             try
             {
-                sellCoin = await _holdingService.SellCoinAsync(purchaseModel.WalletId, purchaseModel.CoinId, purchaseModel.Amount);
+                sellCoin = await _holdingService.SellCoinAsync(sellModel.WalletId, sellModel.CoinId, sellModel.Amount);
             }
             catch (DbUpdateException e)
             {
                 ErrorResponseModel errorResponse = new ErrorResponseModel
                 {
-                    ErrorMessage = e.InnerException.Message ?? e.Message,
+                    ErrorMessage = (e.InnerException != null) ? e.InnerException.Message : e.Message,
                     StatusCode = HttpStatusCode.BadRequest
                 };
 
@@ -133,7 +133,7 @@ namespace CryptoTrading.API.Controllers
                 return BadRequest(errorResponse);
             }
 
-            return CreatedAtAction(nameof(GetPurchase), new { walletId = sellCoin.Data.WalletId, coinId = sellCoin.Data.Coin.Id }, sellCoin.Data);
+            return CreatedAtAction(nameof(GetHolding), new { walletId = sellCoin.Data.WalletId, coinId = sellCoin.Data.Coin.Id }, sellCoin.Data);
         }
 
     }

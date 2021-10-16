@@ -11,7 +11,7 @@ namespace CryptoTrading.Domain.Interfaces
     {
         Task<GenericDomainModel<HoldingDomainModel>> BuyCoinAsync(Guid walletId, string coinId, decimal coinAmount);
         Task<GenericDomainModel<HoldingDomainModel>> SellCoinAsync(Guid walletId, string coinId, decimal coinAmount);
-        Task<GenericDomainModel<HoldingDomainModel>> GetPurchasesByUserId(Guid userId);
-        Task<GenericDomainModel<HoldingDomainModel>> GetPurchase(Guid walletId, string coinId);
+        Task<GenericDomainModel<HoldingDomainModel>> GetHoldingsByUserId(Guid userId);
+        Task<GenericDomainModel<HoldingDomainModel>> GetHolding(Guid walletId, string coinId);
     }
 }

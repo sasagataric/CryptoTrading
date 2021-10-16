@@ -18,13 +18,13 @@ namespace CryptoTrading.Repositories
             _cryptoTradingContext = cryptoTradingContext;
         }
 
-        public Holding DeletePurchasedCoin(Holding purchasedCoin)
+        public Holding DeleteHoldingCoin(Holding purchasedCoin)
         {
             var deleted = _cryptoTradingContext.Holdings.Remove(purchasedCoin);
             return deleted.Entity;
         }
 
-        public async Task<IEnumerable<Holding>> GetTransactionsByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<Holding>> GetHoldingsByUserIdAsync(Guid userId)
         {
             var purchasedCoin = await _cryptoTradingContext.Holdings.Where(x => x.Wallet.UserId == userId )
                                                                                     .Include(x =>x.Wallet)
@@ -33,7 +33,7 @@ namespace CryptoTrading.Repositories
             return purchasedCoin;
         }
 
-        public async Task<Holding> GetTransactionAsync(Guid walletId, string coinId)
+        public async Task<Holding> GetHoldingAsync(Guid walletId, string coinId)
         {
             var purchasedCoin = await _cryptoTradingContext.Holdings.Where(x => x.CoinId == coinId && x.WalletId == walletId)
                                                                         .Include(x => x.Wallet)
