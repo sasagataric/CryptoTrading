@@ -1,5 +1,5 @@
 import React  from 'react'
-import {Col, OverlayTrigger, Table, Tooltip} from 'react-bootstrap'
+import {Col, OverlayTrigger, Spinner, Table, Tooltip} from 'react-bootstrap'
 import {ICoinsMarkets} from './../../models/CoinGeckoModels'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import CoinTableRow from './../coin-table-row/CoinTableRow'
@@ -7,6 +7,7 @@ import InfoBox from '../info-box/InfoBox'
 
 
 interface IProps{
+    watchListDataloading?: boolean
     coins?: ICoinsMarkets[] | null ;
     watchlistCoins : ICoinsMarkets[];
     setWatchlist: React.Dispatch<React.SetStateAction<ICoinsMarkets[]>>;
@@ -14,7 +15,7 @@ interface IProps{
     removeCoin? : (coinId: string) => void;
 }
 
-const CoinsTable: React.FC<IProps> = ({coins,isWatchList,watchlistCoins,setWatchlist}) => {
+const CoinsTable: React.FC<IProps> = ({coins,isWatchList,watchlistCoins,setWatchlist,watchListDataloading}) => {
 
     const removeCoindFromWatchlist = (coinId : string) : void =>{
         let filteredCoins = watchlistCoins?.filter(coin => coin.id !== coinId);
@@ -74,8 +75,21 @@ const CoinsTable: React.FC<IProps> = ({coins,isWatchList,watchlistCoins,setWatch
             ));
         }
 
+        if(coins && coins?.length<1){
+            return <tr className="bg-radial-gradiant-sws" >
+                        <td colSpan={10} className="no-hover">
+                            <Col className="d-flex justify-content-center my-5">
+                                <InfoBox 
+                                heading="The searched cryptocurrency was not found"
+                                description="Please try a different name"
+                                />
+                            </Col>
+                        </td>
+                    </tr>
+        }
         return coins?.map((coin) => (
             <CoinTableRow
+            watchListDataloading={watchListDataloading}
             addCoindToWatchlist={addCoindToWatchlist}  
             removeCoinFromWatchList={removeCoindFromWatchlist} 
             inWatchList={checkWatchList(coin)} 
@@ -90,7 +104,12 @@ const CoinsTable: React.FC<IProps> = ({coins,isWatchList,watchlistCoins,setWatch
             <Table  responsive hover className="fix-table font-sm-09"  style={{width:"70vw"}}>
                 <thead>
                     <tr>
-                        <th ></th>
+                        <th>
+                            {
+                              watchListDataloading===true &&  
+                              <Spinner variant="warning" animation="border" className="spinner-star" />
+                            }
+                        </th>
                         <th className="text-start ps-3 fixed-tb-col" >Coin</th>
                         <th className="d-none d-sm-table-cell"></th>
                         <th >Buy</th>

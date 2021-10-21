@@ -6,14 +6,20 @@ import {CoinGeckoService} from './../../../services/coinGeckoAPIService'
 import {userService} from './../../../services/userService'
 import ReactPaginate from 'react-paginate';
 import './Cryptocurrencies.css'
+import SearchCoin from '../../search-coin/SearchCoin'
+import { utils } from '../../../utils/Utils'
 
 const Cryptocurrencies:React.FC = (props:any) => {
     const [coins,setCoins] = useState<ICoinsMarkets[] | null >([]);
     const [loading,setLoading] = useState<boolean>(true);
+    const [watchListDataloading,setWatchListDataloading] = useState<boolean>(true);
     const [rowSize,setRowSize] = useState<number>(10);
     const [pageNumber,setPageNumber] = useState<number>(1);
     const [orderBy,setOrderBy] = useState<string>("market_cap_desc");
     const [watchlist, setWatchlist] = useState<ICoinsMarkets[]> ([]);
+    const [search, setSearch] = useState<string>("");
+    const [searchCoinIDs, setSearchCoinIDs] = useState<string[]>([""]);
+
 
     const isActiveRowSize = (number : number) => number===rowSize;
 
@@ -31,33 +37,46 @@ const Cryptocurrencies:React.FC = (props:any) => {
                 return 90;
         }
     }
+    useEffect(() => {
+        let isMounted = true; 
+        let coinIDs=  utils.findCoinIDsFromCoinDataList(search);
+        if (isMounted){
+        if(coinIDs.length<1){
+            setSearchCoinIDs([search]);
+          }else{
+            setSearchCoinIDs(coinIDs);
+          }
+      }
+      return () => { isMounted = false };
+     
+    }, [search])
 
     useEffect(() => {
-        
         (async () => {
             setLoading(true);
-            const coinsData =await CoinGeckoService.getCoinsMarkets("eur",orderBy,rowSize,pageNumber,[]);
+            const coinsData =await CoinGeckoService.getCoinsMarkets("eur",orderBy,rowSize,pageNumber,searchCoinIDs);
             setCoins(coinsData);
+            setLoading(false);
+
+            setWatchListDataloading(true);
             const watchlistData =await userService.getWatchList();
             if(watchlistData){
                 setWatchlist(watchlistData); 
             }
-            setLoading(false);
+            setWatchListDataloading(false);
         })()
         
-    }, [rowSize,orderBy,pageNumber])
+    }, [rowSize,orderBy,pageNumber,searchCoinIDs])
 
     useEffect(() => {
        const interval = setInterval(async () => {
-           if(!loading){
-            const coinsData =await CoinGeckoService.getCoinsMarkets("eur",orderBy,rowSize,pageNumber,[]);
+           if(!loading && coins && coins?.length>0){
+            const coinsData =await CoinGeckoService.getCoinsMarkets("eur",orderBy,rowSize,pageNumber,searchCoinIDs);
             setCoins(coinsData);
            }
-            
         },15000)
-
         return () => clearInterval(interval);
-    }, [rowSize,orderBy,pageNumber,loading])
+    }, [rowSize,orderBy,pageNumber,searchCoinIDs,loading,coins])
 
     return (
         <React.Fragment>
@@ -68,6 +87,11 @@ const Cryptocurrencies:React.FC = (props:any) => {
             loading 
             ?<Spinner animation="border" className="spinner-color" />
             :<>
+                <Row className="justify-content-center mb-3">
+                    <Col xs={11} sm={6} md={5} xl={3} xxl={3}>
+                        <SearchCoin search={search} setSearch={setSearch}/>
+                    </Col>
+                </Row>
                 <Row className="justify-content-center mb-3">
                     <Dropdown className="col-auto">
                         <Dropdown.Toggle variant="" id="dropdown-basic" className="shadow-none">
@@ -93,31 +117,35 @@ const Cryptocurrencies:React.FC = (props:any) => {
                 </Row>
                 <Row className="justify-content-center">
                     <Col xs="auto">
-                        <CoinsTable watchlistCoins={watchlist} setWatchlist={setWatchlist} isWatchList={false} coins={coins}/>
+                        <CoinsTable watchListDataloading={watchListDataloading} watchlistCoins={watchlist} setWatchlist={setWatchlist} isWatchList={false} coins={coins}/>
                     </Col>
                 </Row>
-                <Row className={"justify-content-center py-4 "}>
-                    <Col xs="auto" className="font-sm-09">
-                        <ReactPaginate
-                        previousLabel={'<'}
-                        nextLabel={'>'}
-                        breakLabel={'...'}
-                        breakClassName={'break-me'}
-                        pageCount={getPageCount()}
-                        forcePage={pageNumber-1}
-                        marginPagesDisplayed={1}
-                        pageRangeDisplayed={4}
-                        onPageChange={(data:any)=>setPageNumber(data.selected+1)}
-                        containerClassName={'pagination'}
-                        pageClassName={' mx-1 px-2 py-1 my-auto rounded'}
-                        pageLinkClassName={'fw-bold rounded text-dark'}
-                        activeClassName={'active border rounded bg-primary'}
-                        activeLinkClassName={'text-white '}
-                        previousClassName={'fs-5 mx-1 px-2  border rounded fw-bold text-dark'}
-                        nextClassName={'fs-5 mx-1 px-2 border rounded fw-bold text-dark'}
-                        />
+                {
+                    search === "" &&
+                    <Row className={"justify-content-center py-4 "}>
+                        <Col xs="auto" className="font-sm-09">
+                            <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            breakClassName={'break-me'}
+                            pageCount={getPageCount()}
+                            forcePage={pageNumber-1}
+                            marginPagesDisplayed={1}
+                            pageRangeDisplayed={4}
+                            onPageChange={(data:any)=>setPageNumber(data.selected+1)}
+                            containerClassName={'pagination'}
+                            pageClassName={' mx-1 px-2 py-1 my-auto rounded'}
+                            pageLinkClassName={'fw-bold rounded text-dark'}
+                            activeClassName={'active border rounded bg-primary'}
+                            activeLinkClassName={'text-white '}
+                            previousClassName={'fs-5 mx-1 px-2  border rounded fw-bold text-dark'}
+                            nextClassName={'fs-5 mx-1 px-2 border rounded fw-bold text-dark'}
+                            />
                     </Col>
                 </Row>
+                }
+                
             </>
             }
             

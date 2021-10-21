@@ -33,7 +33,6 @@ API.interceptors.response.use(
     const originalConfig = err.config;
     // Access Token was expired
     if (err.response.status === 401 && !originalConfig._retry) {
-      console.log(err.response);
       originalConfig._retry = true;
       let refresh_token =TokenService.getLocalRefreshToken();
       if(!refresh_token) {
@@ -52,7 +51,6 @@ API.interceptors.response.use(
             }
         }
         const rs = await IdentityServer.post<IRefreshTokenResponse>("/connect/token", params, config);
-        console.log(rs);
         TokenService.setLocalAccessToken(rs.data.access_token);
         TokenService.setLocalRefreshToken(rs.data.refresh_token);
 

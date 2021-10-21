@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import {data} from "./coinListJSON";
+
 // @ts-ignore 
 import { NotificationManager } from "react-notifications";
 
@@ -47,11 +49,19 @@ function usePrevious(value:any) {
     return ref.current;
 }
 
+const findCoinIDsFromCoinDataList = (search:string) =>{
+    let coin = data.filter(coin=> 
+        coin.name.toLowerCase().replace( /\s/g, '')===search.toLowerCase().replace( /\s/g, '')
+        || coin.symbol.toLowerCase().replace( /\s/g, '')===search.toLowerCase().replace( /\s/g, ''));
+    return coin.map(c=>c.id);
+}
+
 export const utils = {
     isLoggedIn,
     isLoggedInWithNotification,
     getToLocalString,
     formatProfitNumber,
     numberChangeAnimation,
-    usePrevious
+    usePrevious,
+    findCoinIDsFromCoinDataList
 };

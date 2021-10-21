@@ -1,0 +1,14 @@
+.bg-light-red{
+    background-color: rgba(223, 85, 85, 0.884);
+    border: none;
+}
+.bg-light-red:hover{
+    background-color: rgba(223, 49, 49, 0.884);
+}
+.input-focus:focus{
+    border: 2px rgba(168, 172, 177, 0.863) solid !important;
+  
+}
+.hover-dark-grey:hover{
+    background-color: rgb(219, 221, 223);
+}
