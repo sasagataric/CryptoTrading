@@ -10,6 +10,7 @@ Crypto Trading is a fully functional web application that gives users the abilit
 <li>Identity Server 4</li>
 <li>React</li>
 <li>Typescript</li>
+<li>Redux</li>
 <li>CoinGecko API</li>
 <li>Google API</li>
 </ul>
