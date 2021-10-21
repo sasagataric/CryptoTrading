@@ -13,9 +13,10 @@ interface IProps{
     inWatchList : boolean;
     removeCoinFromWatchList? : (coinId: string) => void;
     addCoindToWatchlist? : (coin : ICoinsMarkets) => void;
+    watchListDataloading?: boolean
 }
 
-const CoinTableRow: React.FC<IProps> = ({coin,inWatchList,removeCoinFromWatchList,addCoindToWatchlist}) => {
+const CoinTableRow: React.FC<IProps> = ({coin,inWatchList,removeCoinFromWatchList,addCoindToWatchlist,watchListDataloading}) => {
 
     const [modalShow, setModalShow] = useState(false);
     const [loadingStar, setLoadingStar] = useState(false)
@@ -69,24 +70,33 @@ const CoinTableRow: React.FC<IProps> = ({coin,inWatchList,removeCoinFromWatchLis
         }
     }
 
+    const showStar =()=>{
+        if(watchListDataloading && watchListDataloading===true){
+            return(
+                <></>
+            )
+        }else
+        return(
+            <OverlayTrigger
+            placement="top"
+            delay={{ show: 100, hide: 50 }}
+            overlay={<Tooltip id="button-tooltip">{overlayText}</Tooltip>}>
+                <Button variant="link" className="p-0 shadow-none">
+                    {
+                    loadingStar
+                    ?<Spinner variant="warning" animation="border" className="spinner-star" />
+                    :<i id="Button" onClick={async () => {await coinOnClick(coin);}} className={"p-2 text-warning "+starIcon} />
+                    }
+                </Button>
+            </OverlayTrigger>
+            )
+    }
+
     return (
         <>
         <tr onClick={(e)=>handleClick(e,coin.id)} key={coin.id} className="align-middle clickable">
             <td >
-                <OverlayTrigger
-                    placement="top"
-                    delay={{ show: 100, hide: 50 }}
-                    overlay={<Tooltip id="button-tooltip">{overlayText}</Tooltip>}
-                >
-                    
-                    <Button variant="link" className="p-0 shadow-none">
-                        {
-                        loadingStar
-                        ?<Spinner variant="warning" animation="border" className="spinner-star" />
-                        :<i id="Button" onClick={async () => {await coinOnClick(coin);}} className={"p-2 text-warning "+starIcon} />
-                        }
-                    </Button>
-                </OverlayTrigger>
+                {showStar()}
             </td>
             <td  className="fixed-tb-col">
                 <div className="d-flex align-items-center text-start clickable">

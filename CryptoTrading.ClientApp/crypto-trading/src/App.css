@@ -50,6 +50,7 @@
   position:sticky;
   left:0px;
   background-color: #F8F9FA;
+  z-index: 99;
 }
 
 
@@ -113,3 +114,4 @@
   width: 19px !important;
   height: 19px !important;
 }
+
