@@ -7,7 +7,8 @@ import {utils} from '../../utils/Utils'
 import TreansactionBuyModel from '../transaction-model/TreansactionBuyModel';
 import { useHistory } from 'react-router-dom';
 import SpikeLineChart from '../spikeline-chart/SpikeLineChart'
-
+// @ts-ignore 
+import { NotificationManager } from "react-notifications";
 interface IProps{
     coin : ICoinsMarkets;
     inWatchList : boolean;
@@ -26,6 +27,10 @@ const CoinTableRow: React.FC<IProps> = ({coin,inWatchList,removeCoinFromWatchLis
     
     const showModel = () => {
         if(!utils.isLoggedInWithNotification()) {
+            return null;
+        }
+        if(watchListDataloading && watchListDataloading===true){
+            NotificationManager.warning('','Please wait for all data to be loaded',1500);
             return null;
         }
         setModalShow(true)
@@ -114,7 +119,12 @@ const CoinTableRow: React.FC<IProps> = ({coin,inWatchList,removeCoinFromWatchLis
                 <p className="fw-light my-auto clickable">{coin.symbol.toUpperCase()}</p>
             </td>
             <td>
-                <Button onClick={showModel} variant="outline-success" id="Button" className="mx-3 shadow-none font-sm-09">Buy</Button>
+                <Button 
+                onClick={showModel} 
+                variant="outline-success" 
+                id="Button" 
+                className="mx-3 shadow-none font-sm-09"
+                >Buy</Button>
             </td>
             <td className={utils.numberChangeAnimation(prevPrice,coin.current_price)}>€{utils.getToLocalString(coin.current_price)}</td>
             
